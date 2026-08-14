@@ -34,10 +34,10 @@ Recommended: GitHub → Settings → Branches → protect `main` and require the
 This is separate from the GitHub *integration* above.
 
 1. GitHub → Settings → Developer settings → **OAuth Apps** → New.
-2. Homepage URL = production origin (`https://<project>.vercel.app` or custom domain).
+2. Homepage URL = `https://blog-theta-puce-50.vercel.app` (or a custom domain).
 3. Authorization callback URL = `https://snudwrbgqnutqotjmqai.supabase.co/auth/v1/callback`
 4. In Supabase → Authentication → Providers → **GitHub**: paste Client ID and secret. Enable the provider.
-5. Site URL = production origin. Redirect allow-list: `https://<prod>/auth/callback` and `http://127.0.0.1:3000/auth/callback`.
+5. Site URL = `https://blog-theta-puce-50.vercel.app`. Redirect allow-list: `https://blog-theta-puce-50.vercel.app/auth/callback` and `http://127.0.0.1:3000/auth/callback`.
 
 ## 4. Connect the repo to Vercel (app on push)
 
@@ -50,7 +50,7 @@ This is separate from the GitHub *integration* above.
    | `NEXT_PUBLIC_SUPABASE_URL` | `https://snudwrbgqnutqotjmqai.supabase.co` |
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Publishable |
    | `SUPABASE_SERVICE_ROLE_KEY` | Server-only. Never expose to the browser |
-   | `NEXT_PUBLIC_SITE_URL` | `https://<prod-domain>` |
+   | `NEXT_PUBLIC_SITE_URL` | `https://blog-theta-puce-50.vercel.app` |
 
 4. Deploy-on-commit is the default. Prefer git push over the CLI.
 
