@@ -226,11 +226,12 @@ export function PostEditor({ post, tags }: PostEditorProps) {
     nextStatus: PostStatus,
     successMessage: string,
   ) {
+    setBusy(true);
     const saved = dirty ? await save() : true;
     if (!saved) {
+      setBusy(false);
       return;
     }
-    setBusy(true);
     const result = await action(post.id);
     setBusy(false);
     if (!result.success) {

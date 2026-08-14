@@ -75,3 +75,41 @@ export function adminClient(): SupabaseClient<Database> {
     { auth: { persistSession: false, autoRefreshToken: false } },
   );
 }
+
+export async function createReaderSession(): Promise<{
+  client: SupabaseClient<Database>;
+  userId: string;
+}> {
+  requireTestEnv();
+  const admin = adminClient();
+  const email = `rls-reader-${Date.now()}-${Math.random().toString(16).slice(2)}@example.com`;
+  const password = `Test-${crypto.randomUUID()}`;
+
+  const { data, error } = await admin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+  });
+
+  if (error || !data.user) {
+    throw new Error(error?.message ?? "createUser failed");
+  }
+
+  const client = createClient<Database>(
+    process.env.TEST_SUPABASE_URL!,
+    process.env.TEST_SUPABASE_ANON_KEY!,
+    { auth: { persistSession: false, autoRefreshToken: false } },
+  );
+
+  const { error: signInError } = await client.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (signInError) {
+    await admin.auth.admin.deleteUser(data.user.id);
+    throw new Error(signInError.message);
+  }
+
+  return { client, userId: data.user.id };
+}

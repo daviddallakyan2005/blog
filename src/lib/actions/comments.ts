@@ -59,6 +59,7 @@ export async function createComment(
     .from("posts")
     .select("id")
     .eq("id", postId)
+    .eq("status", "published")
     .maybeSingle();
 
   if (!post) {

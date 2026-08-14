@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { MobileNav } from "@/components/site/mobile-nav";
 import { ThemeToggle } from "@/components/site/theme-toggle";
 
 const NAV = [
@@ -17,11 +18,14 @@ export function Header({ siteName }: { siteName: string }) {
       <div className="mx-auto flex h-14 max-w-prose items-center justify-between gap-4 px-6">
         <Link
           href="/"
-          className="min-w-0 truncate font-semibold tracking-tight"
+          className="min-w-0 flex-1 truncate font-semibold tracking-tight md:flex-none"
         >
           {siteName}
         </Link>
-        <nav className="flex shrink-0 items-center gap-1 text-sm sm:gap-2">
+        <nav
+          className="hidden shrink-0 items-center gap-1 text-sm whitespace-nowrap sm:gap-2 md:flex"
+          aria-label="Site"
+        >
           {NAV.map((item) => (
             <Link
               key={item.href}
@@ -33,6 +37,10 @@ export function Header({ siteName }: { siteName: string }) {
           ))}
           <ThemeToggle />
         </nav>
+        <div className="flex shrink-0 items-center gap-1 md:hidden">
+          <ThemeToggle />
+          <MobileNav items={NAV} />
+        </div>
       </div>
     </header>
   );

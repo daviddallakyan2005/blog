@@ -65,6 +65,21 @@ function bustPostCache(slug: string) {
   updateTag("tags");
 }
 
+async function bustIfPublished(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  postId: string,
+) {
+  const { data } = await supabase
+    .from("posts")
+    .select("status, slug")
+    .eq("id", postId)
+    .maybeSingle();
+
+  if (data?.status === "published") {
+    bustPostCache(data.slug);
+  }
+}
+
 async function slugTaken(
   supabase: Awaited<ReturnType<typeof createClient>>,
   slug: string,
@@ -153,6 +168,7 @@ export async function setPostTags(
   }
 
   if (slugs.length === 0) {
+    await bustIfPublished(supabase, parsed.data.postId);
     return { success: true };
   }
 
@@ -200,6 +216,7 @@ export async function setPostTags(
     }
   }
 
+  await bustIfPublished(supabase, parsed.data.postId);
   return { success: true };
 }
 
@@ -215,6 +232,16 @@ export async function autosavePost(
 
   const supabase = await createClient();
   const { id, title, slug, body_md, kind, tagSlugs } = parsed.data;
+
+  const { data: existing, error: loadError } = await supabase
+    .from("posts")
+    .select("status, slug")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (loadError || !existing) {
+    return fail(loadError?.message ?? "Post not found");
+  }
 
   if (await slugTaken(supabase, slug, id)) {
     return fail("That slug is already in use");
@@ -259,6 +286,13 @@ export async function autosavePost(
     const tagsResult = await setPostTags(id, tagSlugs);
     if (!tagsResult.success) {
       return tagsResult;
+    }
+  }
+
+  if (existing.status === "published") {
+    bustPostCache(existing.slug);
+    if (slug !== existing.slug) {
+      bustPostCache(slug);
     }
   }
 

@@ -91,12 +91,46 @@ const supabase = createClient(url, serviceRoleKey, {
 });
 
 const isUuid = UUID_RE.test(identifier);
-const query = supabase.from("profiles").update({ role: "owner" });
-const filtered = isUuid
-  ? query.eq("id", identifier)
-  : query.eq("github_username", identifier);
 
-const { data, error } = await filtered.select("id, github_username, role");
+async function resolveProfileId() {
+  if (isUuid) {
+    return identifier;
+  }
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id")
+    .eq("github_username", identifier);
+
+  if (error) {
+    console.error(`Failed to look up profile: ${error.message}`);
+    process.exit(1);
+  }
+
+  if (!data?.length) {
+    console.error(
+      `No profile with github_username "${identifier}". Sign in with GitHub first so a profile row is created.`,
+    );
+    process.exit(1);
+  }
+
+  if (data.length !== 1) {
+    console.error(
+      `Refusing to grant owner: ${data.length} profiles share github_username "${identifier}". Pass a profile UUID instead.`,
+    );
+    process.exit(1);
+  }
+
+  return data[0].id;
+}
+
+const profileId = await resolveProfileId();
+
+const { data, error } = await supabase
+  .from("profiles")
+  .update({ role: "owner" })
+  .eq("id", profileId)
+  .select("id, github_username, role");
 
 if (error) {
   console.error(`Failed to grant owner: ${error.message}`);
@@ -111,6 +145,5 @@ if (!data?.length) {
   process.exit(1);
 }
 
-for (const row of data) {
-  console.log(`Granted owner to ${row.github_username ?? row.id} (${row.id}).`);
-}
+const row = data[0];
+console.log(`Granted owner to ${row.github_username ?? row.id} (${row.id}).`);

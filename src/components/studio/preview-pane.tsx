@@ -1,6 +1,5 @@
+import { RenderedHtml } from "@/components/prose/rendered-html";
 import { cn } from "@/lib/utils";
-
-import "./preview.css";
 
 type PreviewPaneProps = {
   html: string;
@@ -9,10 +8,12 @@ type PreviewPaneProps = {
 
 export function PreviewPane({ html, className }: PreviewPaneProps) {
   return (
-    <article
+    <div
+      role="region"
       aria-label="Markdown preview"
-      className={cn("prose-blog overflow-auto", className)}
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
+      className={cn("overflow-auto", className)}
+    >
+      <RenderedHtml html={html} />
+    </div>
   );
 }

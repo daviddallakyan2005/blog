@@ -43,15 +43,15 @@ More: [docs/local-development.md](docs/local-development.md).
 Push `main` and both platforms deploy from GitHub (same model as az-ra-esm):
 
 - **Vercel** (`fra1`) rebuilds the app via native Git integration
-- **Supabase** (Blog org, `eu-central-1`) applies new files under `supabase/migrations/` via native GitHub integration — no manual `db push`, no migration GitHub Action
+- **Supabase** (Blog org, `eu-central-1`) applies new files under `supabase/migrations/` via native GitHub integration — no manual `db push`, no migration GitHub Action (there is no `.github/workflows/deploy-migrations.yml`)
 
-One-time: connect the repo in Supabase → Integrations → GitHub (directory `supabase`, branch `main`, **Deploy to production**), import the same repo in Vercel, set env vars, add a GitHub OAuth app for studio login.
+One-time: connect the repo in Supabase → Integrations → GitHub (directory `supabase`, branch `main`, **Deploy to production**), import the same repo in Vercel, set public env vars (no service role key), add a GitHub OAuth app (GitHub Auth on, Email off). Protect `main` and require CI.
 
 Details: [docs/deployment.md](docs/deployment.md).
 
 ## Owner bootstrap
 
-`handle_new_user` always inserts `reader`. After the first GitHub login (local or production), run `scripts/grant-owner.mjs` with the service role. That is the only supported service-role use.
+`handle_new_user` always inserts `reader`. After the first GitHub login (local or production), run `scripts/grant-owner.mjs` with the service role on a trusted machine (UUID or unique `github_username`; prefer UUID). That is the only supported service-role use. Do not put the service role key in Vercel.
 
 ## Scripts
 

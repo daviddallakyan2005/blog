@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import { Github } from "lucide-react";
 import { toast } from "sonner";
 
@@ -14,7 +16,14 @@ function safeNextPath(next: string | null): string {
 }
 
 export default function LoginPage() {
+  const [pending, setPending] = useState(false);
+
   async function signInWithGitHub() {
+    if (pending) {
+      return;
+    }
+
+    setPending(true);
     const supabase = createClient();
     const next = safeNextPath(
       new URLSearchParams(window.location.search).get("next"),
@@ -30,6 +39,7 @@ export default function LoginPage() {
     });
 
     if (error) {
+      setPending(false);
       toast.error(error.message);
     }
   }
@@ -38,12 +48,25 @@ export default function LoginPage() {
     <main className="w-full max-w-sm text-center">
       <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
       <p className="mt-3 text-muted-foreground">
-        GitHub is required to access the studio.
+        GitHub sign-in is required to comment or to open the studio. Non-owners
+        who sign in from a public page return there.
       </p>
-      <Button className="mt-8 w-full" onClick={signInWithGitHub}>
+      <Button
+        type="button"
+        className="mt-8 w-full"
+        onClick={signInWithGitHub}
+        disabled={pending}
+        aria-busy={pending}
+      >
         <Github />
-        Sign in with GitHub
+        {pending ? "Signing in…" : "Sign in with GitHub"}
       </Button>
+      <Link
+        href="/"
+        className="mt-6 inline-block text-accent underline-offset-4 hover:underline"
+      >
+        Back home
+      </Link>
     </main>
   );
 }

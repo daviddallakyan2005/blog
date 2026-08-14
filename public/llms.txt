@@ -1,4 +1,4 @@
-# Blog
+# David Dallakyan
 
 A personal technical blog.
 
@@ -8,4 +8,7 @@ A personal technical blog.
 - /notes
 - /about
 - /projects
+- /tags
+- /search
 - /feed.xml
+- /sitemap.xml

@@ -9,6 +9,10 @@ function safeNextPath(next: string | null): string {
   return next;
 }
 
+function isStudioPath(path: string): boolean {
+  return path === "/studio" || path.startsWith("/studio/");
+}
+
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
@@ -43,5 +47,9 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL(next, origin));
   }
 
-  return NextResponse.redirect(new URL("/denied", origin));
+  if (isStudioPath(next)) {
+    return NextResponse.redirect(new URL("/denied", origin));
+  }
+
+  return NextResponse.redirect(new URL(next, origin));
 }

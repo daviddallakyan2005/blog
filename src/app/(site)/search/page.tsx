@@ -22,7 +22,14 @@ export default function SearchPage({
       <p className="mt-3 text-muted-foreground">
         Find published articles and notes.
       </p>
-      <Suspense fallback={<SearchFallback />}>
+      <Suspense fallback={<SearchForm q="" />}>
+        <SearchFormFromParams searchParams={searchParams} />
+      </Suspense>
+      <Suspense
+        fallback={
+          <p className="mt-10 text-sm text-muted-foreground">Searching…</p>
+        }
+      >
         <SearchResults searchParams={searchParams} />
       </Suspense>
     </div>
@@ -45,13 +52,13 @@ function SearchForm({ q = "" }: { q?: string }) {
   );
 }
 
-function SearchFallback() {
-  return (
-    <>
-      <SearchForm />
-      <p className="mt-10 text-sm text-muted-foreground">Searching…</p>
-    </>
-  );
+async function SearchFormFromParams({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q: raw } = await searchParams;
+  return <SearchForm q={raw ?? ""} />;
 }
 
 async function SearchResults({
@@ -62,13 +69,7 @@ async function SearchResults({
   const { q: raw } = await searchParams;
   const q = raw ?? "";
   const results = await searchPosts(q);
-
-  return (
-    <>
-      <SearchForm q={q} />
-      <ResultsList q={q} results={results} />
-    </>
-  );
+  return <ResultsList q={q} results={results} />;
 }
 
 function postHref(result: SearchResult): string {

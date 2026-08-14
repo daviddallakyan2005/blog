@@ -13,8 +13,16 @@ export default async function SiteLayout({
 
   return (
     <div className="flex min-h-dvh flex-col">
+      <a
+        href="#content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:border focus:border-border focus:bg-background focus:px-3 focus:py-2 focus:text-sm focus:text-foreground"
+      >
+        Skip to content
+      </a>
       <Header siteName={siteName} />
-      <main className="flex-1">{children}</main>
+      <main id="content" className="flex-1">
+        {children}
+      </main>
       <Footer />
     </div>
   );
