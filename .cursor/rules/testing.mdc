@@ -1,0 +1,23 @@
+---
+description: Unit vs integration skip without .env.test; never hit production
+globs: **/*.test.ts,e2e/**
+alwaysApply: false
+---
+
+# Testing
+
+- Test observable behavior and invariants, not implementation details.
+- For bug fixes, add a focused regression test that fails on the original behavior when practical.
+- Do not weaken assertions, add arbitrary waits, or change production code solely to make a test pass.
+
+## Tiers
+
+- **Unit** (`pnpm test:unit` / files under `src/**/*.test.ts`): no Supabase required. Markdown, slug, Zod, pure helpers.
+- **Integration** (`pnpm test:integration` / `tests/**`): requires `.env.test` with `TEST_SUPABASE_URL`, `TEST_SUPABASE_ANON_KEY`, `TEST_SUPABASE_SERVICE_ROLE_KEY` from **local** `supabase status`. Helpers skip the suite when those are missing (`describe.skipIf(!hasEnv)`).
+- **E2E** (`pnpm test:e2e`): Playwright against local Next. Never point at production.
+
+## Expectations
+
+- Never run integration or E2E against the production Supabase project or the production URL.
+- State skipped checks and missing `.env.test` in the handoff.
+- Tests live in `tests/**` and `e2e/**` (owned by the tests agent). Implementation agents may add colocated `src/**/*.test.ts` for unit coverage they own.

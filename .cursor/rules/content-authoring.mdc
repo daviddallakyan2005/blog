@@ -1,0 +1,19 @@
+---
+description: Preview equals publish via renderMarkdown; always sanitize
+globs: src/lib/markdown/**,src/app/studio/**
+alwaysApply: false
+---
+
+# Content authoring
+
+- Preview and publish **must** use the same pipeline: `renderMarkdown` in `src/lib/markdown/render.ts`.
+- Always sanitize (`rehype-sanitize` + `sanitize-schema.ts`). Never skip sanitize for "trusted" owner markdown — XSS still ships to public readers.
+- Persist `body_html`, `toc_json`, `reading_minutes`, and `word_count` from that pipeline on save/publish. Do not re-implement markdown in the browser for the published path.
+- Studio preview pane (`src/components/studio/preview-pane.tsx`) must call the same server render path as publish.
+- Local drafts in `content/drafts/` are scratch only. Publishing happens in `/studio`, not by committing markdown to the repo.
+
+## Editorial
+
+- Articles vs notes are `posts.kind`. Do not invent a third public kind without a migration.
+- Code samples in posts should be real enough to compile or run in the stated language. Prefer languages already in the Shiki allowlist in `render.ts`.
+- Cover images go through media actions + the `media` bucket. Provide alt text.

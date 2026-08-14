@@ -1,0 +1,26 @@
+---
+description: Timestamped migrations, default-deny RLS, SECURITY DEFINER, grants, service-role limits
+globs: supabase/**,src/lib/supabase/**,src/lib/database.types.ts
+alwaysApply: false
+---
+
+# Database and security
+
+- `supabase/migrations/` is the source of truth for schema, functions, triggers, grants, and RLS.
+- Add a **new timestamped** migration (`YYYYMMDDHHMMSS_name.sql`) after the latest file. Never rewrite an applied migration.
+- Default all work to local Supabase. Do not `db push`, `link`, or mutate a remote project without explicit authorization (hook will ask).
+- Do not hand-edit `src/lib/database.types.ts`. Regenerate with `scripts/gen-types.sh`.
+
+## Security invariants
+
+- RLS is **default-deny**. Enable RLS before or with the table. Add explicit policies; never rely on table grants alone.
+- Public reads: published posts, visible comments, public catalogs (tags, projects, timeline, site_settings, media metadata). Drafts, revisions, and pending comments stay owner-only (authors may see their own pending comments).
+- `SECURITY DEFINER` functions must set `search_path` (empty or an explicit list). Validate auth inside the function. Use `(select public.is_owner())` / `(select auth.uid())` so Postgres can initplan.
+- GRANTs are explicit. Anon is select-only on public catalogs. No client `INSERT` on `profiles` (trigger-only). Revoke leftover `PUBLIC` execute on definer functions, then grant the minimum roles.
+- Service-role clients bypass RLS. App code must not use `src/lib/supabase/admin.ts`. Owner bootstrap is `scripts/grant-owner.mjs` only.
+- Never log or expose `SUPABASE_SERVICE_ROLE_KEY`.
+
+## Verification
+
+- After migration changes: `supabase db reset` locally, then `pnpm test:integration` when `.env.test` exists.
+- Delegate `blog-db-reviewer` for RLS, grants, definer functions, or privileged clients.

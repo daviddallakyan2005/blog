@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeShellExecution": [
+      {
+        "command": "python3 .cursor/hooks/confirm-remote-operation.py",
+        "matcher": "(^|[;&|]\\s*)(supabase\\s+(db\\s+push|link|functions\\s+deploy|secrets\\s+(set|unset)|projects\\s+(create|delete)|branches\\s+(create|delete))|vercel([^;&|]*--prod|\\s+(promote|rollback|env\\s+(add|rm))))",
+        "timeout": 5,
+        "failClosed": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+---
+description: Zod validation, cookie client, requireOwner writes, no open redirects
+globs: src/lib/actions/**,src/lib/auth.ts,src/app/api/**,src/middleware.ts
+alwaysApply: false
+---
+
+# Server actions and authentication
+
+- Treat every form value, route param, search param, and client identifier as untrusted.
+- Validate with Zod schemas in `src/lib/validations/` before database access.
+- Writes that change site content use the **cookie client** (`src/lib/supabase/server.ts`) and `requireOwner()` from `src/lib/auth.ts`.
+- Do not import the service-role admin client in actions, routes, or middleware.
+- Middleware refreshes the session (`src/lib/supabase/middleware.ts`). It is not sufficient authorization — check `requireOwner` at the action/page boundary.
+
+## Redirects
+
+- Never open-redirect. Allow only same-origin relative paths that start with `/` and do not start with `//` (see `safeNextPath` in login and `/auth/callback`).
+- After GitHub OAuth, non-owners go to `/denied`. Missing session goes to `/login`.
+
+## Action behavior
+
+- Follow neighboring `ActionResult` (`success` / `error`) patterns. Return safe errors; do not leak SQL or secrets.
+- On success, `updateTag` every affected cache tag (`posts`, `post:${slug}`, `tags`, `projects`, `timeline`, `settings`, `comments`). Do not bust cache on failed writes.
+- Studio layout already calls `requireOwner`. Still authorize inside each mutating action.

@@ -1,0 +1,65 @@
+# Personal technical blog
+
+Articles, notes, projects, and an about/timeline page. I write in `/studio`; everyone else reads published rows through Postgres RLS.
+
+## Stack
+
+- Next.js 16 App Router (`src/`), React 19, Tailwind CSS v4, shadcn-style `src/components/ui`
+- Supabase Postgres + GitHub Auth + Storage (`eu-central-1`)
+- Vercel (`fra1`), deploy on git push
+- pnpm, Vitest, Playwright
+
+## Local quickstart
+
+Docker + Supabase CLI. If **az-ra-esm** is already running, it may hold **54321–54323**.
+
+```bash
+pnpm install
+supabase start
+# copy URL + keys from `supabase status` into .env.local (see .env.example)
+pnpm dev
+```
+
+Sign in at `/login`, then grant owner:
+
+```bash
+node --env-file=.env.local scripts/grant-owner.mjs <github_username_or_uuid>
+```
+
+More: [docs/local-development.md](docs/local-development.md).
+
+## Docs
+
+- [Architecture](docs/architecture.md)
+- [Content model & RLS](docs/content-model.md)
+- [Local development](docs/local-development.md)
+- [Deployment](docs/deployment.md)
+- [Design](docs/design.md)
+- [Performance](docs/performance.md)
+- [Security](docs/security.md)
+
+## Deploy
+
+Push `main` and both platforms deploy from GitHub (same model as az-ra-esm):
+
+- **Vercel** (`fra1`) rebuilds the app via native Git integration
+- **Supabase** (Blog org, `eu-central-1`) applies new files under `supabase/migrations/` via native GitHub integration — no manual `db push`, no migration GitHub Action
+
+One-time: connect the repo in Supabase → Integrations → GitHub (directory `supabase`, branch `main`, **Deploy to production**), import the same repo in Vercel, set env vars, add a GitHub OAuth app for studio login.
+
+Details: [docs/deployment.md](docs/deployment.md).
+
+## Owner bootstrap
+
+`handle_new_user` always inserts `reader`. After the first GitHub login (local or production), run `scripts/grant-owner.mjs` with the service role. That is the only supported service-role use.
+
+## Scripts
+
+| Command | Purpose |
+| --- | --- |
+| `pnpm dev` | Next (Turbopack) |
+| `pnpm typecheck` / `pnpm lint` / `pnpm build` | Gates |
+| `pnpm test:unit` | `src/**/*.test.ts` |
+| `pnpm test:integration` | `tests/**` (needs `.env.test`) |
+| `pnpm test:e2e` | Playwright |
+| `./scripts/gen-types.sh` | Regenerate `src/lib/database.types.ts` |

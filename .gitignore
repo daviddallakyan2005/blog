@@ -1,0 +1,22 @@
+node_modules
+.next
+out
+.env
+.env.*
+!.env.example
+.DS_Store
+*.tsbuildinfo
+.vercel
+playwright-report
+test-results
+e2e/.auth
+supabase/.temp
+supabase/.branches
+
+# Commit .cursor so local and cloud agents share it.
+!.cursor/
+!.cursor/**
+
+content/drafts/**
+!content/drafts/README.md
+
