@@ -15,6 +15,7 @@ const describeRls = hasTestEnv() ? describe : describe.skip;
 
 describeRls("RLS", () => {
   const createdPostIds: string[] = [];
+  const createdGithubPrIds: string[] = [];
   const createdUserIds: string[] = [];
   const storagePaths: string[] = [];
   let seq = 0;
@@ -23,6 +24,11 @@ describeRls("RLS", () => {
   function uniqueSlug(label: string) {
     seq += 1;
     return `test-${Date.now()}-${seq}-${label}`;
+  }
+
+  function uniqueGithubId() {
+    seq += 1;
+    return Date.now() * 1000 + seq;
   }
 
   beforeAll(async () => {
@@ -36,6 +42,14 @@ describeRls("RLS", () => {
     if (createdPostIds.length > 0) {
       await admin.from("posts").delete().in("id", createdPostIds);
       createdPostIds.length = 0;
+    }
+
+    if (createdGithubPrIds.length > 0) {
+      await admin
+        .from("github_pull_requests")
+        .delete()
+        .in("id", createdGithubPrIds);
+      createdGithubPrIds.length = 0;
     }
 
     if (storagePaths.length > 0) {
@@ -340,5 +354,103 @@ describeRls("RLS", () => {
   // Creating a second Auth user just for this check is out of scope here.
   it.skip("authenticated reader cannot update another comment status", () => {
     expect(true).toBe(true);
+  });
+
+  it("anon can select github_pull_requests inserted via admin", async () => {
+    const admin = adminClient();
+    const githubId = uniqueGithubId();
+    const repo = `test-owner/rls-${githubId}`;
+    const { data, error } = await admin
+      .from("github_pull_requests")
+      .insert({
+        github_id: githubId,
+        repo,
+        number: 1,
+        title: "Public PR snapshot",
+        html_url: `https://github.com/${repo}/pull/1`,
+        state: "open",
+        github_created_at: new Date().toISOString(),
+        github_updated_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdGithubPrIds.push(data!.id);
+
+    const { data: rows, error: selectError } = await anonClient()
+      .from("github_pull_requests")
+      .select("id")
+      .eq("id", data!.id);
+
+    expect(selectError).toBeNull();
+    expect(rows ?? []).toHaveLength(1);
+  });
+
+  it("authenticated reader cannot insert github_pull_requests", async () => {
+    const githubId = uniqueGithubId();
+    const repo = `test-owner/rls-${githubId}`;
+    const { error } = await reader.client.from("github_pull_requests").insert({
+      github_id: githubId,
+      repo,
+      number: 1,
+      title: "Reader insert should fail",
+      html_url: `https://github.com/${repo}/pull/1`,
+      state: "open",
+      github_created_at: new Date().toISOString(),
+      github_updated_at: new Date().toISOString(),
+    });
+
+    expect(error).toBeTruthy();
+  });
+
+  it("authenticated reader cannot update or delete github_pull_requests", async () => {
+    const admin = adminClient();
+    const githubId = uniqueGithubId();
+    const repo = `test-owner/rls-${githubId}`;
+    const originalTitle = "Owner snapshot";
+    const { data, error } = await admin
+      .from("github_pull_requests")
+      .insert({
+        github_id: githubId,
+        repo,
+        number: 1,
+        title: originalTitle,
+        html_url: `https://github.com/${repo}/pull/1`,
+        state: "closed",
+        github_created_at: new Date().toISOString(),
+        github_updated_at: new Date().toISOString(),
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdGithubPrIds.push(data!.id);
+
+    const { data: updated } = await reader.client
+      .from("github_pull_requests")
+      .update({ title: "hacked title" })
+      .eq("id", data!.id)
+      .select("id");
+
+    expect(updated ?? []).toHaveLength(0);
+
+    const { data: deleted } = await reader.client
+      .from("github_pull_requests")
+      .delete()
+      .eq("id", data!.id)
+      .select("id");
+
+    expect(deleted ?? []).toHaveLength(0);
+
+    const { data: remaining } = await admin
+      .from("github_pull_requests")
+      .select("id, title")
+      .eq("id", data!.id)
+      .single();
+
+    expect(remaining?.title).toBe(originalTitle);
   });
 });

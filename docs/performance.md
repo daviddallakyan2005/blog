@@ -5,7 +5,8 @@ Keep reads cached and close to the database. Detail: `.cursor/skills/performance
 ## Defaults
 
 - Public loaders: `'use cache'` + `cacheTag` + `cacheLife("hours")` + anon client (`src/lib/data/*`).
-- Writes: `updateTag` on `posts` / `post:${slug}` / `tags` / `projects` / `timeline` / `settings` / `comments`.
+- Writes: `updateTag` on `posts` / `post:${slug}` / `tags` / `projects` / `timeline` / `settings` / `comments` / `github-prs`.
+- Hourly GitHub Action writes Postgres only and does not `updateTag`. Public `/contributions` freshness is `cacheLife("hours")`. Studio Sync now is what calls `updateTag("github-prs")`.
 - `cacheComponents: true` in `next.config.ts`.
 - Parallelize independent fetches (`Promise.all`). No cookie client inside cached functions.
 

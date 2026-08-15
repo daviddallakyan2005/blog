@@ -86,6 +86,66 @@ export type Database = {
           },
         ];
       };
+      github_pull_requests: {
+        Row: {
+          closed_at: string | null;
+          draft: boolean;
+          github_created_at: string;
+          github_id: number;
+          github_updated_at: string;
+          html_url: string;
+          id: string;
+          issue_comments: number;
+          merged: boolean;
+          merged_at: string | null;
+          number: number;
+          repo: string;
+          review_comments: number;
+          review_decision: string | null;
+          state: string;
+          synced_at: string;
+          title: string;
+        };
+        Insert: {
+          closed_at?: string | null;
+          draft?: boolean;
+          github_created_at: string;
+          github_id: number;
+          github_updated_at: string;
+          html_url: string;
+          id?: string;
+          issue_comments?: number;
+          merged?: boolean;
+          merged_at?: string | null;
+          number: number;
+          repo: string;
+          review_comments?: number;
+          review_decision?: string | null;
+          state: string;
+          synced_at?: string;
+          title: string;
+        };
+        Update: {
+          closed_at?: string | null;
+          draft?: boolean;
+          github_created_at?: string;
+          github_id?: number;
+          github_updated_at?: string;
+          html_url?: string;
+          id?: string;
+          issue_comments?: number;
+          merged?: boolean;
+          merged_at?: string | null;
+          number?: number;
+          repo?: string;
+          review_comments?: number;
+          review_decision?: string | null;
+          state?: string;
+          synced_at?: string;
+          title?: string;
+        };
+        Relationships: [];
+      };
       media_assets: {
         Row: {
           alt: string | null;

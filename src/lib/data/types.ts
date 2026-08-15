@@ -85,3 +85,23 @@ export type TimelineEntry = {
   highlights: string[];
   sort_order: number;
 };
+
+export type GithubPr = {
+  id: string;
+  github_id: number;
+  repo: string;
+  number: number;
+  title: string;
+  html_url: string;
+  state: "open" | "closed";
+  merged: boolean;
+  draft: boolean;
+  review_decision: "APPROVED" | "CHANGES_REQUESTED" | "REVIEW_REQUIRED" | null;
+  issue_comments: number;
+  review_comments: number;
+  github_updated_at: string;
+  github_created_at: string;
+  closed_at: string | null;
+  merged_at: string | null;
+  synced_at: string;
+};

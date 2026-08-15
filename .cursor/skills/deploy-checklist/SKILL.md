@@ -1,6 +1,6 @@
 ---
 name: deploy-checklist
-description: Git-push deploy-on-commit checklist for Vercel fra1 and Supabase eu-central-1. Native GitHub integrations for app and migrations. Never db push as the day-to-day path.
+description: Git-push deploy-on-commit checklist for Vercel fra1 and Supabase eu-central-1. Never configure a Supabase GitHub integration from this repo. Never db push as the day-to-day path.
 ---
 
 # Deployment checklist
@@ -9,8 +9,8 @@ Read `docs/deployment.md` first. Preparing a checklist does **not** authorize a 
 
 ## Model
 
-- App: **git push → Vercel native Git integration** (region `fra1`).
-- Schema: **git push → Supabase native GitHub integration** applies new files in `supabase/migrations/` on `main`. Free on all plans. No migration GitHub Action, no day-to-day `db push`.
+- App: **git push → Vercel** (region `fra1`) after the GitHub repo is connected.
+- Schema: add files under `supabase/migrations/` and push. Supabase applies them only after **you** connect the repo in the dashboard. Do not set up a Supabase GitHub integration, an Action that **applies migrations**, or `db push` as the day-to-day path. Existing CI and `sync-github-prs.yml` (GitHub API + Postgres upsert only) are allowed.
 - Database region: **eu-central-1**. Keep compute next to data.
 
 ## 1. Identify the target
@@ -33,12 +33,12 @@ Read `docs/deployment.md` first. Preparing a checklist does **not** authorize a 
 ## 4. Execute only when authorized
 
 - Prefer git push to `main` over manual `vercel --prod` or `supabase db push`.
-- **Never `supabase db push` as the day-to-day path.** The GitHub integration applies new migration files.
+- **Never `supabase db push` as the day-to-day path.** Do not apply migrations from an Action or configure a Supabase GitHub integration here. CI and `sync-github-prs.yml` are allowed.
 - Never print secret values.
 
 ## 5. Post-deploy
 
-- Confirm Vercel build and the Action (if migrations shipped).
+- Confirm the Vercel build. Do not connect or verify a Supabase GitHub integration from the agent.
 - After first production GitHub login, grant owner:
 
   ```bash

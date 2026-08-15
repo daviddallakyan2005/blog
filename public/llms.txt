@@ -8,6 +8,7 @@ A personal technical blog.
 - /notes
 - /about
 - /projects
+- /contributions
 - /tags
 - /search
 - /feed.xml

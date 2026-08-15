@@ -15,7 +15,7 @@ Default-deny RLS, cookie-session writes, no open redirects, sanitize all markdow
 - RLS on every public table. Anon cannot read drafts, revisions, or non-visible comments.
 - `SECURITY DEFINER` execute: keep `is_owner`, `search_posts`, `current_profile_id` as needed for RLS/RPC. Trigger functions (`handle_new_user`, `protect_profile_role`, `enforce_comment_rate_limit`) are revoked from `public` / `anon` / `authenticated`.
 - Explicit GRANTs. No client insert on `profiles`.
-- Service role is not imported by App Router code.
+- Service role is not imported by App Router code. It is allowed in `scripts/grant-owner.mjs` and `scripts/sync-github-prs.mjs` (GitHub Action / trusted machine) only — never in the App Router or Vercel.
 
 ## Storage
 
@@ -28,10 +28,13 @@ Default-deny RLS, cookie-session writes, no open redirects, sanitize all markdow
 - `renderMarkdown` always runs `rehype-sanitize`. Preview === publish.
 - JSON-LD escapes `<`. RSS escapes XML.
 - `robots` disallows `/studio`, `/login`, `/denied`, `/auth`.
+- `next` must remain same-origin after URL normalization; reject pathnames that start with `//`.
 
 ## Secrets
 
-`.env`, `.env.*` are gitignored (`.env.example` is not). Never log `SUPABASE_SERVICE_ROLE_KEY`. Do not put the service role key in Vercel. Shell hook asks before `supabase db push|link|…` and production Vercel mutations.
+`.env`, `.env.*` are gitignored (`.env.example` is not). Never log `SUPABASE_SERVICE_ROLE_KEY` or `GITHUB_PR_TOKEN`. Do not put the service role key in Vercel. Shell hook asks before `supabase db push|link|…` and production Vercel mutations.
+
+`GITHUB_PR_TOKEN` is a PAT for reading public pull requests (one GraphQL search), not OAuth login scopes (`read:user user:email` stay on the OAuth App). Fine-grained PAT: resource owner = user, repository access = **Public repositories** (not this blog repo only), Pull requests Read. Classic PAT with no extra scopes, or `public_repo` if search only returns owned repos. `scripts/sync-github-prs.mjs` does not call `updateTag`; the public page may stay cached for up to one `cacheLife` after the hourly write. Studio Sync now busts `github-prs`.
 
 ## Comments
 

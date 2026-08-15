@@ -14,6 +14,7 @@ Source of truth: `supabase/migrations/`. Types: `src/lib/database.types.ts` (gen
 | `site_settings` | Singleton `id = 1` (display name, bio, social, SEO). |
 | `projects` | Public catalog. |
 | `timeline_entries` | About page (`role`, `education`, `talk`, `award`, `oss_contribution`). |
+| `github_pull_requests` | Public GitHub PR snapshots; owner writes. |
 | `comments` | `visible` \| `pending` \| `hidden` \| `spam`. Rate limit: 5/hour/author. |
 
 `search_posts(q, limit_n)` is SECURITY DEFINER and returns **published** rows only.
@@ -27,7 +28,7 @@ RLS is enabled and default-deny. Policies use `(select public.is_owner())` / `(s
 | `posts` | `status = 'published'` | all |
 | `post_tags` | if parent post published | all |
 | `post_revisions` | none | all |
-| `tags`, `projects`, `timeline_entries`, `site_settings`, `media_assets`, `profiles` | select | write |
+| `tags`, `projects`, `timeline_entries`, `github_pull_requests`, `site_settings`, `media_assets`, `profiles` | select | write |
 | `comments` | `visible`, or own rows | all + moderate |
 | `comments` insert | authenticated, `author_id = auth.uid()`, `status = 'pending'` | same |
 | `storage.objects` (`media`) | select | write |

@@ -40,18 +40,18 @@ More: [docs/local-development.md](docs/local-development.md).
 
 ## Deploy
 
-Push `main` and both platforms deploy from GitHub (same model as az-ra-esm):
+Push `main` and both platforms deploy:
 
-- **Vercel** (`fra1`) rebuilds the app via native Git integration
-- **Supabase** (Blog org, `eu-central-1`) applies new files under `supabase/migrations/` via native GitHub integration — no manual `db push`, no migration GitHub Action (there is no `.github/workflows/deploy-migrations.yml`)
+- **Vercel** (`fra1`) rebuilds the app when the GitHub repo is connected
+- **Supabase** (Blog org, `eu-central-1`) applies new files under `supabase/migrations/` when you connect this repo in the Supabase dashboard — no `db push`, no Action that applies migrations. Hourly PR sync (`.github/workflows/sync-github-prs.yml`) talks to GitHub and Postgres only.
 
-One-time: connect the repo in Supabase → Integrations → GitHub (directory `supabase`, branch `main`, **Deploy to production**), import the same repo in Vercel, set public env vars (no service role key), add a GitHub OAuth app (GitHub Auth on, Email off). Protect `main` and require CI.
+One-time: import the repo in Vercel, set public env vars (no service role key), add a GitHub OAuth app for studio login (GitHub Auth on, Email off). Protect `main` and require CI. Connect the same repo in Supabase yourself if you want migrations on push.
 
 Details: [docs/deployment.md](docs/deployment.md).
 
 ## Owner bootstrap
 
-`handle_new_user` always inserts `reader`. After the first GitHub login (local or production), run `scripts/grant-owner.mjs` with the service role on a trusted machine (UUID or unique `github_username`; prefer UUID). That is the only supported service-role use. Do not put the service role key in Vercel.
+`handle_new_user` always inserts `reader`. After the first GitHub login (local or production), run `scripts/grant-owner.mjs` with the service role on a trusted machine (UUID or unique `github_username`; prefer UUID). Supported service-role uses are `scripts/grant-owner.mjs` and `scripts/sync-github-prs.mjs` (GitHub Action / trusted machine). Do not put the service role key in Vercel.
 
 ## Scripts
 

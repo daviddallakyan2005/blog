@@ -1,13 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { safeNextPath } from "@/lib/safe-next-path";
 import { createClient } from "@/lib/supabase/server";
-
-function safeNextPath(next: string | null): string {
-  if (!next || !next.startsWith("/") || next.startsWith("//")) {
-    return "/studio";
-  }
-  return next;
-}
 
 function isStudioPath(path: string): boolean {
   return path === "/studio" || path.startsWith("/studio/");
@@ -16,7 +10,7 @@ function isStudioPath(path: string): boolean {
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = safeNextPath(searchParams.get("next"));
+  const next = safeNextPath(searchParams.get("next") ?? "/studio", origin);
 
   if (!code) {
     return NextResponse.redirect(new URL("/login", origin));

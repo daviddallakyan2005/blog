@@ -6,14 +6,8 @@ import { Github } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { safeNextPath } from "@/lib/safe-next-path";
 import { createClient } from "@/lib/supabase/browser";
-
-function safeNextPath(next: string | null): string {
-  if (!next || !next.startsWith("/") || next.startsWith("//")) {
-    return "/studio";
-  }
-  return next;
-}
 
 export default function LoginPage() {
   const [pending, setPending] = useState(false);
@@ -26,7 +20,8 @@ export default function LoginPage() {
     setPending(true);
     const supabase = createClient();
     const next = safeNextPath(
-      new URLSearchParams(window.location.search).get("next"),
+      new URLSearchParams(window.location.search).get("next") ?? "/studio",
+      window.location.origin,
     );
     const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`;
 

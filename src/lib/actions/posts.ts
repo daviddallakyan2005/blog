@@ -270,6 +270,13 @@ export async function autosavePost(
     return fail(updateError.message);
   }
 
+  if (existing.status === "published") {
+    bustPostCache(existing.slug);
+    if (slug !== existing.slug) {
+      bustPostCache(slug);
+    }
+  }
+
   const { error: revisionError } = await supabase
     .from("post_revisions")
     .insert({
@@ -286,13 +293,6 @@ export async function autosavePost(
     const tagsResult = await setPostTags(id, tagSlugs);
     if (!tagsResult.success) {
       return tagsResult;
-    }
-  }
-
-  if (existing.status === "published") {
-    bustPostCache(existing.slug);
-    if (slug !== existing.slug) {
-      bustPostCache(slug);
     }
   }
 

@@ -10,6 +10,7 @@ const NAV = [
   { href: "/projects", label: "Projects" },
   { href: "/about", label: "About" },
   { href: "/search", label: "Search" },
+  { href: "/contributions", label: "Contributions" },
 ] as const;
 
 export function Header({ siteName }: { siteName: string }) {
@@ -23,14 +24,14 @@ export function Header({ siteName }: { siteName: string }) {
           {siteName}
         </Link>
         <nav
-          className="hidden shrink-0 items-center gap-1 text-sm whitespace-nowrap sm:gap-2 md:flex"
+          className="hidden shrink-0 items-center gap-1 text-sm whitespace-nowrap md:flex"
           aria-label="Site"
         >
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-md px-2 py-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="rounded-md px-1.5 py-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               {item.label}
             </Link>
