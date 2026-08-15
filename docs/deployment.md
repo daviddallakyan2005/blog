@@ -74,8 +74,8 @@ Secrets on the **GitHub repo** (Settings → Secrets and variables → Actions):
 | --------------------------- | ----------------------------------------------------------- |
 | `NEXT_PUBLIC_SUPABASE_URL`  | Production Supabase URL                                     |
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only; GitHub Actions / trusted machine, never Vercel |
-| `GITHUB_PR_TOKEN`           | PAT for public PR read                                      |
-| `GITHUB_PR_AUTHOR`          | Optional; defaults to `daviddallakyan2005`                  |
+| `GH_PR_TOKEN`               | PAT for public PR read (Actions forbids `GITHUB_*` names; workflow maps this to `GITHUB_PR_TOKEN`) |
+| `GH_PR_AUTHOR`              | Optional; defaults to `daviddallakyan2005`                  |
 
 Vercel env (Production and Preview): `GITHUB_PR_TOKEN`, optional `GITHUB_PR_AUTHOR`. Still no service role on Vercel.
 
