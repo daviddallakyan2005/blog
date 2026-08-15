@@ -1,3 +1,4 @@
+import { EasterEggProvider } from "@/components/play/easter-egg-provider";
 import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
 import { getSiteSettings } from "@/lib/data/settings";
@@ -19,11 +20,23 @@ export default async function SiteLayout({
       >
         Skip to content
       </a>
+      <div
+        id="start-with-the-first-program"
+        aria-hidden="true"
+        data-easter-egg-hint="start with the first program"
+        data-inspect-note="hidden hint box"
+        className="pointer-events-none fixed -left-[10000px] top-0 opacity-0"
+      >
+        <div className="rounded-md border border-dashed border-muted-foreground/50 bg-background px-3 py-2 font-mono text-xs text-foreground shadow-sm">
+          start with the first program
+        </div>
+      </div>
       <Header siteName={siteName} />
       <main id="content" className="flex-1">
         {children}
       </main>
       <Footer />
+      <EasterEggProvider />
     </div>
   );
 }

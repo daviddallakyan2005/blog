@@ -53,9 +53,15 @@ importers:
       react:
         specifier: 19.2.8
         version: 19.2.8
+      react-2048:
+        specifier: ^1.1.0
+        version: 1.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react-dom:
         specifier: 19.2.8
         version: 19.2.8(react@19.2.8)
+      react-snake-lib:
+        specifier: ^1.0.9
+        version: 1.0.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       reading-time:
         specifier: 1.5.0
         version: 1.5.0
@@ -2800,6 +2806,12 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
+  react-2048@1.1.0:
+    resolution: {integrity: sha512-eEQROamVZyB0fwUNfs0MuTh9xfEkTvvoyO/s+PNoOHwV1C0knry6vKU1cpWvmyS4/4dQOoDCZ+bKFU6x0YBBBA==}
+    peerDependencies:
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
+
   react-dom@19.2.8:
     resolution: {integrity: sha512-rVprimfGBG3DR+Tq0IQG2DT5PxKth1WIGDmj5yPmlzr4YBe7uyE+Du4oVqTDXZSHGGGXRtTJEGSSePyQCMBglQ==}
     peerDependencies:
@@ -2827,6 +2839,12 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  react-snake-lib@1.0.9:
+    resolution: {integrity: sha512-kdtMIIiKwWQ/ZD7HseYf/lob3hVayVNm59Czx++kZx7sEbM5x+C7hP32ilhl4rB2ThDGVv4uxBkt1wWZ83tNoA==}
+    peerDependencies:
+      react: ^18.2.0
+      react-dom: ^18.2.0
 
   react-style-singleton@2.2.3:
     resolution: {integrity: sha512-b6jSvxvVnyptAiLjbkWLE/lOnR4lfTtDAl+eUC7RZy+QQWc6wRzIV2CE6xBuMmDxc2qIihtDCZD5NPOFl7fRBQ==}
@@ -6219,6 +6237,11 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
+  react-2048@1.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+    dependencies:
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
+
   react-dom@19.2.8(react@19.2.8):
     dependencies:
       react: 19.2.8
@@ -6244,6 +6267,11 @@ snapshots:
       use-sidecar: 1.1.3(@types/react@19.2.8)(react@19.2.8)
     optionalDependencies:
       '@types/react': 19.2.8
+
+  react-snake-lib@1.0.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+    dependencies:
+      react: 19.2.8
+      react-dom: 19.2.8(react@19.2.8)
 
   react-style-singleton@2.2.3(@types/react@19.2.8)(react@19.2.8):
     dependencies:

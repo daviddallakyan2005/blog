@@ -1,0 +1,53 @@
+.play-tetris-board {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 3px;
+  padding: 10px;
+  border-radius: 1rem;
+  background: color-mix(in oklab, var(--card) 65%, var(--background) 35%);
+}
+
+.play-tetris-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.play-tetris-cell {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 0.2rem;
+  border: 1px solid color-mix(in oklab, var(--border) 75%, transparent);
+}
+
+.play-tetris-cell-empty {
+  background: color-mix(in oklab, var(--background) 70%, var(--muted) 30%);
+}
+
+.play-tetris-piece-i {
+  background: #38bdf8;
+}
+
+.play-tetris-piece-j {
+  background: #60a5fa;
+}
+
+.play-tetris-piece-l {
+  background: #fb923c;
+}
+
+.play-tetris-piece-o {
+  background: #facc15;
+}
+
+.play-tetris-piece-s {
+  background: #4ade80;
+}
+
+.play-tetris-piece-t {
+  background: #c084fc;
+}
+
+.play-tetris-piece-z {
+  background: #f87171;
+}
