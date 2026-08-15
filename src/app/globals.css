@@ -181,8 +181,14 @@ body {
   font-size: inherit;
 }
 
+/* Scrolls the table itself: body_html is persisted, so a render-time wrapper
+   would not reach already-published posts. Without this a wide table escapes
+   .prose-blog (overflow-x: visible) and scrolls the whole page. */
 .prose-blog table {
-  width: 100%;
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
   border-collapse: collapse;
   font-size: 0.95em;
 }
