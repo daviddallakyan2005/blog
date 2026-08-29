@@ -41,6 +41,8 @@ export type SiteSettings = {
   tagline: string | null;
   bio_md: string | null;
   bio_html: string | null;
+  cv_md: string;
+  cv_html: string;
   seo_title: string | null;
   seo_description: string | null;
   avatar_path: string | null;

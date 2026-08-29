@@ -26,6 +26,7 @@ const NAV = [
   { href: "/studio/timeline", label: "Timeline" },
   { href: "/studio/comments", label: "Comments" },
   { href: "/studio/contributions", label: "Contributions" },
+  { href: "/studio/cv", label: "CV" },
   { href: "/studio/settings", label: "Settings" },
 ] as const;
 

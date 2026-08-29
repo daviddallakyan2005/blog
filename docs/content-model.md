@@ -11,7 +11,7 @@ Source of truth: `supabase/migrations/`. Types: `src/lib/database.types.ts` (gen
 | `tags` / `post_tags` | Taxonomy. |
 | `post_revisions` | Owner-only history. |
 | `media_assets` | Metadata for Storage `media` bucket. |
-| `site_settings` | Singleton `id = 1` (display name, bio, social, SEO). |
+| `site_settings` | Singleton `id = 1` (display name, bio, `cv_md` / `cv_html`, social, SEO). |
 | `projects` | Public catalog. |
 | `timeline_entries` | About page (`role`, `education`, `talk`, `award`, `oss_contribution`). |
 | `github_pull_requests` | Public GitHub PR snapshots; owner writes. |

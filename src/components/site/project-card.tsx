@@ -34,15 +34,29 @@ export function ProjectCard({ project }: { project: Project }) {
             </Badge>
           ))}
         </div>
-        {project.repo_url ? (
-          <a
-            href={project.repo_url}
-            target="_blank"
-            rel="noreferrer"
-            className="text-sm text-accent underline-offset-4 hover:underline"
-          >
-            Repository
-          </a>
+        {project.homepage_url || project.repo_url ? (
+          <div className="flex flex-wrap gap-3">
+            {project.homepage_url ? (
+              <a
+                href={project.homepage_url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-accent underline-offset-4 hover:underline"
+              >
+                Website
+              </a>
+            ) : null}
+            {project.repo_url ? (
+              <a
+                href={project.repo_url}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-accent underline-offset-4 hover:underline"
+              >
+                Repository
+              </a>
+            ) : null}
+          </div>
         ) : null}
       </CardContent>
     </Card>

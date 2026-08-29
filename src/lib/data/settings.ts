@@ -40,7 +40,7 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
     const { data, error } = await supabase
       .from("site_settings")
       .select(
-        "display_name, tagline, bio_md, bio_html, seo_title, seo_description, avatar_path, social",
+        "display_name, tagline, bio_md, bio_html, cv_md, cv_html, seo_title, seo_description, avatar_path, social",
       )
       .eq("id", 1)
       .maybeSingle();
@@ -54,6 +54,8 @@ export async function getSiteSettings(): Promise<SiteSettings | null> {
       tagline: data.tagline,
       bio_md: data.bio_md,
       bio_html: data.bio_html,
+      cv_md: data.cv_md,
+      cv_html: data.cv_html,
       seo_title: data.seo_title,
       seo_description: data.seo_description,
       avatar_path: data.avatar_path,

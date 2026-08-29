@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { SocialLinks } from "@/components/site/social-links";
 import { TimelineList } from "@/components/site/timeline-list";
@@ -39,6 +40,14 @@ export default async function AboutPage() {
         </div>
       ) : null}
       {settings ? <SocialLinks social={settings.social} /> : null}
+      <p className="mt-6 text-sm">
+        <Link
+          href="/cv"
+          className="text-accent underline-offset-4 hover:underline"
+        >
+          View CV
+        </Link>
+      </p>
       <TimelineList entries={entries} />
     </div>
   );
