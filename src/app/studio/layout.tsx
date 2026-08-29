@@ -87,6 +87,9 @@ async function StudioShell({
           </div>
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground">{name}</span>
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/">View site</Link>
+            </Button>
             <form action={signOut}>
               <Button type="submit" variant="ghost" size="sm">
                 Sign out

@@ -1,4 +1,5 @@
 import { cacheLife } from "next/cache";
+import Link from "next/link";
 
 import { getSiteSettings } from "@/lib/data/settings";
 import { AUTHOR_NAME } from "@/lib/seo/site";
@@ -20,6 +21,9 @@ export async function Footer() {
         <p>
           © {year} {name}
         </p>
+        <Link href="/studio" className="underline-offset-4 hover:underline">
+          Studio
+        </Link>
       </div>
     </footer>
   );

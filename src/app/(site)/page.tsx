@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { RenderedHtml } from "@/components/prose/rendered-html";
 import { PostCard } from "@/components/site/post-card";
+import { Button } from "@/components/ui/button";
 import { getPublishedArticles, getPublishedNotes } from "@/lib/data/posts";
 import { getSiteSettings } from "@/lib/data/settings";
 import { SITE_NAME } from "@/lib/seo/site";
@@ -38,6 +40,7 @@ export default async function HomePage() {
   const name = settings?.display_name?.trim() || SITE_NAME;
   const tagline = settings?.tagline?.trim();
   const bioHtml = settings?.bio_html?.trim();
+  const cvHtml = settings?.cv_html?.trim() ?? "";
 
   return (
     <div className="mx-auto max-w-prose px-6 py-16">
@@ -54,6 +57,26 @@ export default async function HomePage() {
             dangerouslySetInnerHTML={{ __html: bioHtml }}
           />
         ) : null}
+      </section>
+
+      <section id="cv" className="mt-16 scroll-mt-20">
+        <h2 className="text-xl font-semibold tracking-tight">CV</h2>
+        {cvHtml ? (
+          <>
+            <div className="mt-6">
+              <RenderedHtml html={cvHtml} />
+            </div>
+            <div className="mt-10">
+              <Button asChild>
+                <a href="/cv.pdf" download>
+                  Download PDF
+                </a>
+              </Button>
+            </div>
+          </>
+        ) : (
+          <p className="mt-10 text-muted-foreground">No CV published yet.</p>
+        )}
       </section>
 
       <HomeSection

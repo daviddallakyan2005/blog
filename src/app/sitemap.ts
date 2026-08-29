@@ -14,7 +14,6 @@ const STATIC_PATHS = [
   "/projects",
   "/search",
   "/contributions",
-  "/cv",
 ] as const;
 
 async function projectSlugs(): Promise<{ slug: string }[]> {

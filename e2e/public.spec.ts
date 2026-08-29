@@ -10,7 +10,7 @@ test.skip(
 );
 
 const pages: { path: string; text: RegExp }[] = [
-  { path: "/", text: /articles|notes|blog/i },
+  { path: "/", text: /cv/i },
   { path: "/articles", text: /articles/i },
   { path: "/notes", text: /notes/i },
   { path: "/tags", text: /tags/i },
@@ -43,5 +43,5 @@ test("/studio redirects to login", async ({ page }) => {
   const response = await page.goto("/studio");
   expect(response?.status()).toBe(200);
   await expect(page).toHaveURL(/\/login/);
-  await expect(page.getByRole("heading", { name: /sign in/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Studio" })).toBeVisible();
 });

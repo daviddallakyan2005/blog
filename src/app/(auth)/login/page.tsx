@@ -41,10 +41,10 @@ export default function LoginPage() {
 
   return (
     <main className="w-full max-w-sm text-center">
-      <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">Studio</h1>
       <p className="mt-3 text-muted-foreground">
-        GitHub sign-in is required to comment or to open the studio. Non-owners
-        who sign in from a public page return there.
+        Sign in with GitHub to open studio. Non-owners who arrived from a public
+        page still return there.
       </p>
       <Button
         type="button"
@@ -54,7 +54,7 @@ export default function LoginPage() {
         aria-busy={pending}
       >
         <Github />
-        {pending ? "Signing in…" : "Sign in with GitHub"}
+        {pending ? "Signing in…" : "Continue with GitHub"}
       </Button>
       <Link
         href="/"
