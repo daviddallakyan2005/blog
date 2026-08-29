@@ -4,7 +4,7 @@ globs: supabase/**,src/lib/supabase/**,src/lib/database.types.ts
 alwaysApply: false
 ---
 
-# Database and security
+# Database
 
 - `supabase/migrations/` is the source of truth for schema, functions, triggers, grants, and RLS.
 - Add a **new timestamped** migration (`YYYYMMDDHHMMSS_name.sql`) after the latest file. Never rewrite an applied migration.
@@ -23,4 +23,4 @@ alwaysApply: false
 ## Verification
 
 - After migration changes: `supabase db reset` locally, then `pnpm test:integration` when `.env.test` exists.
-- Delegate `blog-db-reviewer` for RLS, grants, definer functions, or privileged clients.
+- Workflow: `migrate` skill. Review: `blog-db-reviewer`.

@@ -4,7 +4,7 @@ globs: src/lib/markdown/**,src/app/studio/**
 alwaysApply: false
 ---
 
-# Content authoring
+# Content
 
 - Preview and publish **must** use the same pipeline: `renderMarkdown` in `src/lib/markdown/render.ts`.
 - Always sanitize (`rehype-sanitize` + `sanitize-schema.ts`). Never skip sanitize for "trusted" owner markdown — XSS still ships to public readers.
@@ -17,3 +17,5 @@ alwaysApply: false
 - Articles vs notes are `posts.kind`. Do not invent a third public kind without a migration.
 - Code samples in posts should be real enough to compile or run in the stated language. Prefer languages already in the Shiki allowlist in `render.ts`.
 - Cover images go through media actions + the `media` bucket. Provide alt text.
+
+Authoring workflow: `write-post` skill.

@@ -5,14 +5,18 @@ description: Wave/fan-out orchestration for this blog. Brief disjoint-path subag
 
 # Delivery team
 
-The main agent is an **orchestrator**. It plans, delegates, gates, and routes review. It does not write feature code (small integration fixes only).
+The main agent is an **orchestrator**. It plans, delegates, gates, and routes review. It does not write feature code (small integration fixes only). Subagent model: `subagents` rule.
 
-Every `Task` launch must pass `model: "cursor-grok-4.6-high"` explicitly. Never inherit. Never `composer-2.5-fast`.
+## Before wave 1
+
+- **Ambiguous request** → `grill`. Wait for confirmation. Do not start implementers.
+- **Hard bug / unexplained regression** → `diagnose` until there is a tight red loop, then implement the fix through this skill.
+- Skip grill and diagnose for trivial copy, one-line fixes, or when the user already specified a single design.
 
 ## Wave 1 — implement
 
 1. Split the request into **disjoint paths** (no two subagents edit the same files).
-2. Brief each implementation subagent with goal, acceptance criteria, allowed paths, and files they must not touch.
+2. Brief each implementation subagent with goal, acceptance criteria, allowed paths, and files they must not touch. Testable seams → `tdd`. Do not TDD-first studio UI, RLS, or migrations.
 3. Launch them in parallel on `cursor-grok-4.6-high`.
 4. Integrate: resolve conflicts yourself only at the seam. If a path is wrong, send it back to that owner.
 

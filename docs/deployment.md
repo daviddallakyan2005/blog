@@ -22,11 +22,11 @@ git push -u origin main
 This is Auth, not the repo connection.
 
 1. GitHub → Settings → Developer settings → **OAuth Apps** → New.
-2. Homepage URL = `https://blog-theta-puce-50.vercel.app` (or a custom domain).
-3. Authorization callback URL = `https://snudwrbgqnutqotjmqai.supabase.co/auth/v1/callback`
+2. Homepage URL = `https://daviddallakyan.com`.
+3. Authorization callback URL = `https://snudwrbgqnutqotjmqai.supabase.co/auth/v1/callback` (this stays the Supabase Auth URL, not the site origin).
 4. In Supabase → Authentication → Providers → **GitHub**: paste Client ID and secret. Enable the provider.
 5. **Disable Email** (and any other password providers). GitHub OAuth only.
-6. Site URL = `https://blog-theta-puce-50.vercel.app`. Redirect allow-list: production `/auth/callback` (`https://blog-theta-puce-50.vercel.app/auth/callback`) and `http://127.0.0.1:3000/auth/callback`.
+6. Site URL = `https://daviddallakyan.com`. Redirect allow-list: `https://daviddallakyan.com/auth/callback`, `https://www.daviddallakyan.com/auth/callback`, `https://blog-theta-puce-50.vercel.app/auth/callback`, and `http://127.0.0.1:3000/auth/callback`.
 
 ## 3. Protect `main`
 
@@ -42,7 +42,7 @@ GitHub → Settings → Branches → protect `main` and require **CI** (this rep
    | ------------------------------- | ------------------------------------------------ |
    | `NEXT_PUBLIC_SUPABASE_URL`      | `https://snudwrbgqnutqotjmqai.supabase.co`       |
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Publishable                                      |
-   | `NEXT_PUBLIC_SITE_URL`          | `https://blog-theta-puce-50.vercel.app`          |
+   | `NEXT_PUBLIC_SITE_URL`          | Production: `https://daviddallakyan.com`. Preview: leave on `*.vercel.app`. |
    | `GITHUB_PR_TOKEN`               | Server-only PAT for Studio **Sync now**. See §6. |
    | `GITHUB_PR_AUTHOR`              | Optional; defaults to `daviddallakyan2005`       |
 
@@ -82,6 +82,16 @@ Vercel env (Production and Preview): `GITHUB_PR_TOKEN`, optional `GITHUB_PR_AUTH
 PAT setup: fine-grained, resource owner = user, repository access = **Public repositories**, Pull requests Read.
 
 Cron freshness: the public page may stay cached up to one `cacheLife` after the hourly write. Studio **Sync now** busts `github-prs` immediately.
+
+## Custom domain
+
+Canonical origin is **`https://daviddallakyan.com`** (no trailing slash). `www.daviddallakyan.com` 308s to the apex. `blog-theta-puce-50.vercel.app` 308s to the apex (path-preserving).
+
+- Vercel production domain: apex. Region stays `fra1`.
+- Production `NEXT_PUBLIC_SITE_URL` = `https://daviddallakyan.com`. Preview stays on `*.vercel.app`. `NEXT_PUBLIC_*` is inlined at build time — change the env var, then redeploy production.
+- GitHub OAuth **Homepage URL** = `https://daviddallakyan.com`.
+- GitHub OAuth **Authorization callback URL** stays `https://snudwrbgqnutqotjmqai.supabase.co/auth/v1/callback`.
+- Supabase Auth **Site URL** = `https://daviddallakyan.com`. Redirect allow-list includes `/auth/callback` on the apex, `www`, the old `*.vercel.app` host, and `http://127.0.0.1:3000`.
 
 ## Rollback
 

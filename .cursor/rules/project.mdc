@@ -1,0 +1,51 @@
+---
+description: Personal technical blog — language, stack, paths, and client roles
+alwaysApply: true
+---
+
+# Project
+
+Owner writes in **studio**. The **public site** reads published rows through RLS. Long form: `docs/`. No `CONTEXT.md`.
+
+## Language
+
+- **public site** — `src/app/(site)/`. Anon sees `posts.status = published` only.
+- **studio** — `src/app/studio/`. Owner CMS. Not a second renderer.
+- **draft / published / archived** — `posts.status`.
+- **revision** — `post_revisions` row, not a status. Owner-only.
+- **pending comment** — `comments.status`. Not public until visible; authors may see their own pending rows.
+- **cookie / anon / service-role** — see Clients.
+- **renderMarkdown** — `src/lib/markdown/`. Preview === publish.
+- **cache tags** — `posts`, `post:${slug}`, `tags`, … Public reads `'use cache'`; writes `updateTag`.
+- **owner / reader** — `profiles.role`.
+- **content/drafts/** — local scratch, not a publish path.
+
+## Stack
+
+- Next.js 16 App Router under `src/`
+- Tailwind CSS v4 (`src/app/globals.css`, `@theme inline`)
+- shadcn-style primitives in `src/components/ui/`
+- Supabase Postgres + Auth (GitHub) + Storage (`media`)
+- Vercel `fra1` next to Supabase `eu-central-1`
+
+## Paths
+
+- `src/app/(auth)/` — `/login`, `/denied`, `/auth/callback`
+- `src/lib/actions/` — Server Actions (Zod + `requireOwner`)
+- `src/lib/data/` — public reads: `'use cache'`, `cacheTag`, `cacheLife`
+- `src/lib/supabase/` — clients
+- `src/lib/database.types.ts` — generated; `scripts/gen-types.sh`
+- `supabase/migrations/` — schema, RLS, grants, functions
+
+## Clients
+
+- **Cookie** (`server.ts`, `browser.ts`) — session, studio, actions, OAuth
+- **Anon** (`anon.ts`) — cookie-less; `'use cache'` public reads only
+- **Service role** (`admin.ts`) — `scripts/grant-owner.mjs` (and equivalent bootstrap) only. Never import into App Router, actions, or client components.
+
+## Conventions
+
+- Public pages must not leak drafts, pending comments, or studio data.
+- Mutations: Server Actions + cookie client + RLS. No service-role bypass.
+- Schema change: new timestamped migration, then `scripts/gen-types.sh`.
+- Read `docs/local-development.md` and `docs/deployment.md` before Docker, remote Supabase, or Vercel.

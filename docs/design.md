@@ -1,6 +1,6 @@
 # Design
 
-Typography-first reading site. Tokens live in `src/app/globals.css`. Agent checklist: `.cursor/skills/frontend-product-design/DESIGN.md`.
+Typography-first reading site. Tokens live in `src/app/globals.css`. Agent checklist: `.cursor/skills/design/DESIGN.md`.
 
 ## Principles
 

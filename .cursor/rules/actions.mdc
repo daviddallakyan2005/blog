@@ -4,7 +4,7 @@ globs: src/lib/actions/**,src/lib/auth.ts,src/app/api/**,src/middleware.ts
 alwaysApply: false
 ---
 
-# Server actions and authentication
+# Actions
 
 - Treat every form value, route param, search param, and client identifier as untrusted.
 - Validate with Zod schemas in `src/lib/validations/` before database access.

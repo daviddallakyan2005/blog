@@ -3,20 +3,20 @@ description: Think first, surgical changes, no drive-by refactors
 alwaysApply: true
 ---
 
-# Karpathy-inspired behavioral guidelines
+# Guidelines
 
-Bias toward caution over speed. For trivial tasks, use judgment.
+Bias toward caution over speed. For trivial tasks, use judgment. Procedures live in skills (`grill`, `tdd`, `diagnose`, `delivery-team`).
 
-## 1. Think before coding
+## Think before coding
 
 Don't assume. Don't hide confusion. Surface tradeoffs.
 
 - State assumptions. If uncertain, ask.
-- If multiple interpretations exist, present them — don't pick silently.
+- If multiple interpretations exist, present them — don't pick silently. Grill before coding; skip grill for trivial or fully specified work.
 - If a simpler approach exists, say so.
 - If something is unclear, stop. Name what's confusing.
 
-## 2. Simplicity first
+## Simplicity first
 
 Minimum code that solves the problem. Nothing speculative.
 
@@ -25,7 +25,7 @@ Minimum code that solves the problem. Nothing speculative.
 - No "flexibility" that wasn't requested.
 - If you write 200 lines and it could be 50, rewrite it.
 
-## 3. Surgical changes
+## Surgical changes
 
 Touch only what you must. Clean up only your own mess.
 
@@ -37,11 +37,10 @@ Touch only what you must. Clean up only your own mess.
 
 Every changed line should trace directly to the user's request.
 
-## 4. Goal-driven execution
+## Verify
 
 Define success criteria. Loop until verified.
 
-- "Add validation" → write tests for invalid inputs, then make them pass.
-- "Fix the bug" → write a test that reproduces it, then make it pass.
-
-For multi-step tasks, state a brief plan with a verify check per step.
+- Testable seam (markdown, slug, Zod, pure helpers) → red then green (`tdd`).
+- Studio/UI, RLS, or migrations → do not invent a unit file or use Playwright as red-green. RLS: integration tests after the SQL. Unexplained failures: `diagnose`.
+- Multi-step work: a brief plan with a verify check per step.

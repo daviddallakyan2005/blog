@@ -12,10 +12,11 @@ Review the requested diff and its execution paths without editing. Read enough s
 Prioritize:
 
 1. Incorrect logic, broken edge cases, stale cache after writes, and error-path failures.
-2. Parallel sources of truth (markdown render, slug rules, Zod vs DB constraints).
-3. Type or runtime assumptions not enforced at the boundary.
-4. Wrong Supabase client (anon in a mutation, service role in the app, cookie client inside `'use cache'`).
-5. Missing focused tests where a realistic failure would escape current coverage.
+2. Diff implements the requested behavior only — extra features and drive-by refactors are findings.
+3. Parallel sources of truth (markdown render, slug rules, Zod vs DB constraints).
+4. Type or runtime assumptions not enforced at the boundary.
+5. Wrong Supabase client (anon in a mutation, service role in the app, cookie client inside `'use cache'`).
+6. Missing focused tests where a realistic failure would escape current coverage. Testable seams should have gone through `tdd`.
 
 Report only actionable findings. For each: severity, file and line/range, failure scenario, why current controls miss it, smallest remediation, proving test.
 

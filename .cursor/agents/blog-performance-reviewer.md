@@ -7,7 +7,7 @@ readonly: true
 
 # Performance reviewer
 
-Review without editing. Read `.cursor/skills/performance-engineering/PERFORMANCE.md`. Optimize real costs. Preserve correctness, authorization, and freshness.
+Review without editing. Read `.cursor/skills/performance/PERFORMANCE.md`. Optimize real costs. Preserve correctness, authorization, and freshness.
 
 ## Review order
 

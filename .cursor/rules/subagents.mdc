@@ -1,0 +1,16 @@
+---
+description: Pin every subagent to cursor-grok-4.6-high
+alwaysApply: true
+---
+
+# Subagents
+
+**Only allowed model:** `cursor-grok-4.6-high`
+
+Do not use `composer-2.5-fast`, `cursor-grok-4.6-high-fast`, `cursor-grok-4.5-high`, `cursor-grok-4.5-high-fast`, `gpt-*`, `claude-*`, or any other model.
+
+- Every `Task` launch **must** pass `model: "cursor-grok-4.6-high"` explicitly. Never inherit.
+- Custom agents in `.cursor/agents/` set that model in frontmatter.
+- Do not substitute another model unless the user overrides it in the current request.
+
+How to plan, gate, and review: `delivery-team` skill.

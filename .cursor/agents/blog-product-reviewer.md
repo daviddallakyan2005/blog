@@ -7,7 +7,7 @@ readonly: true
 
 # Product experience reviewer
 
-Review without editing. Read `.cursor/skills/frontend-product-design/DESIGN.md` and the changed UI.
+Review without editing. Read `.cursor/skills/design/DESIGN.md` and the changed UI.
 
 When a runnable environment exists, inspect the real screen. Check ~390px and a laptop width.
 

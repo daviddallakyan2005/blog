@@ -1,6 +1,6 @@
 # Performance
 
-Keep reads cached and close to the database. Detail: `.cursor/skills/performance-engineering/PERFORMANCE.md`.
+Keep reads cached and close to the database. Detail: `.cursor/skills/performance/PERFORMANCE.md`.
 
 ## Defaults
 

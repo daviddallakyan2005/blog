@@ -1,24 +1,23 @@
-# Blog Cursor configuration
+# Cursor config
 
-Commit this directory. Cloud and local agents share the same rules, skills, and reviewers.
+Rules = invariants. Skills = procedures. Agents = read-only reviewers. No `CONTEXT.md` — map is `rules/project.mdc`, long form is `docs/`.
 
-- `rules/`: always-on project + orchestrator contract, plus path-scoped constraints.
-- `skills/`: workflows loaded by description (delivery, migrations, deploy, writing, design, performance, SEO).
-- `agents/`: independent read-only reviewers. Every custom agent and every Task launch uses `cursor-grok-4.6-high`.
-- `hooks.json`: confirmation gate for mutating linked Supabase or production Vercel.
-- `settings.json`: `{ "plugins": {} }`.
+```
+.cursor/
+  rules/     {topic}.mdc
+  skills/    {name}/SKILL.md
+  agents/    blog-*-reviewer.md  (Task subagent_type — do not rename)
+  hooks.json
+```
 
-## Orchestrator
+Always-on: `project`, `guidelines`, `subagents`. Path-scoped: `testing`, `ui`, `database`, `actions`, `content`, `seo`.
 
-The main agent plans, briefs disjoint-path implementation subagents, gates with typecheck/test/build, then fans out reviewers. It does not write feature code (small integration fixes only). A reviewer `FAIL` goes back to the owning implementation subagent — the orchestrator does not silently patch.
+## Skills
 
-Every `Task` launch must pass `model: "cursor-grok-4.6-high"` explicitly. Never inherit. Never `composer-2.5-fast`.
+**User-invoked** (`disable-model-invocation: true`): `handoff`
+
+**Model-invoked:** `grill`, `tdd`, `diagnose`, `delivery-team`, `migrate`, `deploy`, `write-post`, `design`, `performance`, `seo`
 
 ## Reviewers
 
-- `blog-code-reviewer` — correctness, regressions, architecture
-- `blog-db-reviewer` — migrations, RLS, grants, service-role
-- `blog-verifier` — commands and observable evidence
-- `blog-performance-reviewer` — cache, waterfalls, regions
-- `blog-content-reviewer` — editorial quality, code-sample correctness
-- `blog-product-reviewer` — reading UX, mobile, a11y
+`blog-code-reviewer`, `blog-db-reviewer`, `blog-verifier`, `blog-performance-reviewer`, `blog-content-reviewer`, `blog-product-reviewer` — when to launch them is in `delivery-team`.

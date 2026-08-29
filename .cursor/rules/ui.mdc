@@ -4,12 +4,12 @@ globs: src/app/**,src/components/**,src/app/globals.css
 alwaysApply: false
 ---
 
-# Web UI
+# UI
 
 - React Server Components by default. Add `'use client'` only for browser APIs, local state, effects, or event handlers.
 - Keep data access and authorization on the server. Do not fetch privileged rows in client components.
 - Reuse `src/components/ui/` (button, input, textarea, dialog, dropdown, card, badge, label, skeleton, separator) before adding primitives.
-- Public chrome lives in `src/components/site/`. Studio chrome in `src/components/studio/`. Prose in `src/components/prose/`. SEO in `src/components/seo/`.
+- Public chrome: `src/components/site/`. Studio: `src/components/studio/`. Prose: `src/components/prose/`. SEO: `src/components/seo/`.
 
 ## Reading product
 
@@ -22,3 +22,5 @@ alwaysApply: false
 - Pending/busy feedback on every async submit (disable, spinner or label, `aria-busy`). Block double-submit.
 - Keep client props narrow and serializable. Do not pass Supabase clients or secret-bearing objects to the client.
 - Match adjacent loading, empty, and error patterns. Do not invent a second visual system.
+
+New screens or redesigns: `design` skill.
