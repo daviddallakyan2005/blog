@@ -1,10 +1,11 @@
 import { cacheLife, cacheTag } from "next/cache";
 
 import { renderCvPdf } from "@/lib/cv/markdown-to-pdf";
+import { encodeCvPdfForCache } from "@/lib/cv/pdf-cache";
 
 import { getSiteSettings } from "./settings";
 
-export async function getCvPdf(): Promise<Buffer | null> {
+export async function getCvPdf(): Promise<string | null> {
   "use cache";
   cacheTag("settings");
   cacheLife("hours");
@@ -15,5 +16,5 @@ export async function getCvPdf(): Promise<Buffer | null> {
     return null;
   }
 
-  return renderCvPdf(md);
+  return encodeCvPdfForCache(await renderCvPdf(md));
 }
