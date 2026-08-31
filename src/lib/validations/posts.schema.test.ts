@@ -17,12 +17,8 @@ describe("slugSchema", () => {
 });
 
 describe("createPostSchema", () => {
-  it("requires a title and kind", () => {
-    expect(
-      createPostSchema.safeParse({ title: "Hi", kind: "article" }).success,
-    ).toBe(true);
-    expect(createPostSchema.safeParse({ title: " ", kind: "note" }).success).toBe(
-      false,
-    );
+  it("requires a title only", () => {
+    expect(createPostSchema.safeParse({ title: "Hi" }).success).toBe(true);
+    expect(createPostSchema.safeParse({ title: "" }).success).toBe(false);
   });
 });

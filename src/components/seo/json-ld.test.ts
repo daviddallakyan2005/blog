@@ -9,7 +9,6 @@ function article(overrides: Partial<PublishedPost> = {}): PublishedPost {
   return {
     id: "1",
     slug: "hello",
-    kind: "article",
     title: "Hello",
     summary: "A post.",
     cover_path: null,

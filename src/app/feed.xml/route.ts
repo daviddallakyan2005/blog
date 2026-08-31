@@ -1,4 +1,4 @@
-import { getPublishedArticles, getPublishedNotes } from "@/lib/data/posts";
+import { getPublishedArticles } from "@/lib/data/posts";
 import {
   AUTHOR_NAME,
   SITE_DESCRIPTION,
@@ -18,22 +18,11 @@ function escapeXml(value: string): string {
 }
 
 export async function GET() {
-  const [articles, notes] = await Promise.all([
-    getPublishedArticles(20),
-    getPublishedNotes(20),
-  ]);
-
-  const posts = [...articles, ...notes]
-    .sort((a, b) => {
-      const left = a.published_at ? Date.parse(a.published_at) : 0;
-      const right = b.published_at ? Date.parse(b.published_at) : 0;
-      return right - left;
-    })
-    .slice(0, 20);
+  const posts = await getPublishedArticles(20);
 
   const items = posts
     .map((post) => {
-      const link = absoluteUrl(postPath(post.kind, post.slug));
+      const link = absoluteUrl(postPath(post.slug));
       const description = post.summary ?? "";
       const pubDate = post.published_at
         ? `<pubDate>${new Date(post.published_at).toUTCString()}</pubDate>`

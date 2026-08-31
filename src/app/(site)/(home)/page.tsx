@@ -6,7 +6,7 @@ import { RenderedHtml } from "@/components/prose/rendered-html";
 import { PostCard } from "@/components/site/post-card";
 import { PostListSkeleton } from "@/components/site/post-list";
 import { Button } from "@/components/ui/button";
-import { getPublishedArticles, getPublishedNotes } from "@/lib/data/posts";
+import { getPublishedArticles } from "@/lib/data/posts";
 import { getSiteSettings } from "@/lib/data/settings";
 import type { PublishedPostListItem } from "@/lib/data/types";
 import { publicPageMetadata } from "@/lib/seo/metadata";
@@ -78,11 +78,6 @@ export default async function HomePage() {
           <HomeArticles />
         </Suspense>
       </HomeSection>
-      <HomeSection title="Notes" href="/notes">
-        <Suspense fallback={<PostListSkeleton />}>
-          <HomeNotes />
-        </Suspense>
-      </HomeSection>
     </div>
   );
 }
@@ -115,11 +110,6 @@ function HomeSection({
 async function HomeArticles() {
   const posts = await getPublishedArticles(5);
   return <HomeSectionPosts posts={posts} empty="No articles yet." />;
-}
-
-async function HomeNotes() {
-  const posts = await getPublishedNotes(5);
-  return <HomeSectionPosts posts={posts} empty="No notes yet." />;
 }
 
 function HomeSectionPosts({

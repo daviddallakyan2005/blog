@@ -6,7 +6,7 @@ Personal technical blog: public reading site + owner studio. Next.js 16 App Rout
 
 | Surface | Routes | Data |
 | --- | --- | --- |
-| Public | `src/app/(site)/` — `/`, articles, notes, tags, projects, contributions, about, search | `'use cache'` loaders in `src/lib/data/*` via cookie-less anon client |
+| Public | `src/app/(site)/` — `/`, articles, tags, projects, contributions, about, search | `'use cache'` loaders in `src/lib/data/*` via cookie-less anon client |
 | Studio | `src/app/studio/` | Cookie client + `requireOwner()` |
 | Auth | `/login`, `/denied`, `/auth/callback` | GitHub OAuth; `safeNextPath` blocks open redirects |
 | Feeds | `sitemap.ts`, `robots.ts`, `feed.xml/route.ts` | Published rows only |

@@ -27,22 +27,31 @@ export async function getPublishedArticles(
   "use cache";
   cacheTag("posts");
   cacheLife("hours");
-  return getPublishedByKind("article", limit, offset);
+
+  const supabase = createClient();
+  if (!supabase) {
+    return [];
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("posts")
+      .select(POST_LIST_COLUMNS)
+      .eq("status", "published")
+      .order("published_at", { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (error) {
+      return [];
+    }
+
+    return compactPosts(data as PostListRow[] | null);
+  } catch {
+    return [];
+  }
 }
 
-export async function getPublishedNotes(
-  limit = 20,
-  offset = 0,
-): Promise<PublishedPostListItem[]> {
-  "use cache";
-  cacheTag("posts");
-  cacheLife("hours");
-  return getPublishedByKind("note", limit, offset);
-}
-
-export async function countPublishedPosts(
-  kind: "article" | "note",
-): Promise<number> {
+export async function countPublishedPosts(): Promise<number> {
   "use cache";
   cacheTag("posts");
   cacheLife("hours");
@@ -56,8 +65,7 @@ export async function countPublishedPosts(
     const { count, error } = await supabase
       .from("posts")
       .select("id", { count: "exact", head: true })
-      .eq("status", "published")
-      .eq("kind", kind);
+      .eq("status", "published");
 
     if (error) {
       return 0;
@@ -96,34 +104,5 @@ export async function getPublishedPostBySlug(
     return mapDetailPost(data as PostDetailRow);
   } catch {
     return null;
-  }
-}
-
-async function getPublishedByKind(
-  kind: "article" | "note",
-  limit: number,
-  offset: number,
-): Promise<PublishedPostListItem[]> {
-  const supabase = createClient();
-  if (!supabase) {
-    return [];
-  }
-
-  try {
-    const { data, error } = await supabase
-      .from("posts")
-      .select(POST_LIST_COLUMNS)
-      .eq("status", "published")
-      .eq("kind", kind)
-      .order("published_at", { ascending: false })
-      .range(offset, offset + limit - 1);
-
-    if (error) {
-      return [];
-    }
-
-    return compactPosts(data as PostListRow[] | null);
-  } catch {
-    return [];
   }
 }

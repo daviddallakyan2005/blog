@@ -26,7 +26,7 @@ export default async function Image({
   const post = await getPublishedPostBySlug(slug);
 
   return createOgImage({
-    title: post?.kind === "article" ? post.title : "Article",
-    date: post?.kind === "article" ? post.published_at : null,
+    title: post?.title ?? "Article",
+    date: post?.published_at ?? null,
   });
 }

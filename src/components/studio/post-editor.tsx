@@ -15,7 +15,7 @@ import {
 } from "@/lib/actions/posts";
 import type { Tables } from "@/lib/database.types";
 import { slugify } from "@/lib/slug";
-import type { PostKind, PostStatus } from "@/lib/validations/posts.schema";
+import type { PostStatus } from "@/lib/validations/posts.schema";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -35,7 +35,6 @@ type Draft = {
   slug: string;
   summary: string;
   bodyMd: string;
-  kind: PostKind;
   tags: EditorTag[];
   coverPath: string;
   canonicalUrl: string;
@@ -47,7 +46,6 @@ function sameDraft(a: Draft, b: Draft) {
     a.slug === b.slug &&
     a.summary === b.summary &&
     a.bodyMd === b.bodyMd &&
-    a.kind === b.kind &&
     a.coverPath === b.coverPath &&
     a.canonicalUrl === b.canonicalUrl &&
     a.tags.length === b.tags.length &&
@@ -61,9 +59,6 @@ export function PostEditor({ post, tags }: PostEditorProps) {
   const [slug, setSlug] = useState(post.slug);
   const [summary, setSummary] = useState(post.summary ?? "");
   const [bodyMd, setBodyMd] = useState(post.body_md);
-  const [kind, setKind] = useState<PostKind>(
-    post.kind === "note" ? "note" : "article",
-  );
   const [editorTags, setEditorTags] = useState<EditorTag[]>(tags);
   const [coverPath, setCoverPath] = useState(post.cover_path ?? "");
   const [canonicalUrl, setCanonicalUrl] = useState(post.canonical_url ?? "");
@@ -83,7 +78,6 @@ export function PostEditor({ post, tags }: PostEditorProps) {
     slug,
     summary,
     bodyMd,
-    kind,
     tags: editorTags,
     coverPath,
     canonicalUrl,
@@ -93,7 +87,6 @@ export function PostEditor({ post, tags }: PostEditorProps) {
     slug,
     summary,
     bodyMd,
-    kind,
     tags: editorTags,
     coverPath,
     canonicalUrl,
@@ -137,7 +130,6 @@ export function PostEditor({ post, tags }: PostEditorProps) {
       slug: nextSlug,
       summary: snapshot.summary,
       body_md: snapshot.bodyMd,
-      kind: snapshot.kind,
       tagSlugs: snapshot.tags.map((tag) => tag.slug),
       cover_path: snapshot.coverPath,
       canonical_url: snapshot.canonicalUrl,
@@ -187,7 +179,6 @@ export function PostEditor({ post, tags }: PostEditorProps) {
     slug,
     summary,
     bodyMd,
-    kind,
     editorTags,
     coverPath,
     canonicalUrl,
@@ -342,7 +333,6 @@ export function PostEditor({ post, tags }: PostEditorProps) {
         <MetadataSidebar
           slug={slug}
           summary={summary}
-          kind={kind}
           tags={editorTags}
           coverPath={coverPath}
           canonicalUrl={canonicalUrl}
@@ -354,10 +344,6 @@ export function PostEditor({ post, tags }: PostEditorProps) {
           }}
           onSummaryChange={(value) => {
             setSummary(value);
-            markDirty();
-          }}
-          onKindChange={(value) => {
-            setKind(value);
             markDirty();
           }}
           onTagsChange={(next) => {

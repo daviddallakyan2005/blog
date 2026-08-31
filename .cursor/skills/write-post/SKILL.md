@@ -1,6 +1,6 @@
 ---
 name: write-post
-description: Author a blog post from outline through content/drafts/, editorial review, then publish in /studio. Use when drafting articles or notes.
+description: Author a blog post from outline through content/drafts/, editorial review, then publish in /studio. Use when drafting articles.
 ---
 
 # Write a post
@@ -9,7 +9,7 @@ Publishing is a studio action against Postgres. Pipeline invariants: `content` r
 
 ## Workflow
 
-1. **Outline** — kind (`article` | `note`), working title, slug, summary, headings, tags. Confirm facts and code samples. If kind, audience, or claims are still open, `grill` first.
+1. **Outline** — working title, slug, summary, headings, tags. Confirm facts and code samples. If audience or claims are still open, `grill` first.
 2. **Draft** — markdown under `content/drafts/` (gitignored except `README.md`). Do not commit draft bodies.
 3. **Editorial review** — `blog-content-reviewer` on `cursor-grok-4.6-high`.
 4. **Publish in studio** — owner pastes or edits, sets tags/cover, publishes. The action persists HTML/toc/reading time and `updateTag`s `posts`, `post:${slug}`, `tags`.

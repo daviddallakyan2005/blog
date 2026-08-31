@@ -42,7 +42,6 @@ type Manifest = {
 
 type PostSpec = {
   slug: string;
-  kind: "article" | "note";
   title: string;
   summary: string | null;
   status: "draft" | "published" | "archived";
@@ -185,7 +184,7 @@ function flagshipBody(): string {
     "",
     "Split enumeration is where residual predicates earn their keep. Iceberg can only prune on columns that have bounds in the manifest. Nested fields, poorly typed timestamps, and JSON blobs pretending to be structs will not prune. The residual stays in the scan and becomes a filter on the worker. That is fine for a 2 GB file. It is not fine for 8,000 files you opened because `event_type` was stored as a string with no metrics.",
     "I want the residual to be visible in `EXPLAIN`. Trino will show you the Iceberg table scan with a remaining filter. If that remaining filter is the only selective predicate you had, you are doing a metadata-unaware scan with extra steps. The fix is usually at write time: flatten the column, or add a generated partition transform, or stop shipping JSON into the lake and calling it a table.",
-    "Delete files complicate splits. A data file with a matching position-delete file is not a clean sequential read. The reader must load delete rows, build a bitmap or a sorted set of positions, and skip. Equality deletes are worse: they are joins. If you ingest CDC as equality deletes against a high-cardinality key, you have rebuilt Spark's merge-on-read tax inside Trino. I would rather compact. The [v3 deletion-vector note](/notes/zzreview-iceberg-v3-deletes) is the hopeful sequel.",
+    "Delete files complicate splits. A data file with a matching position-delete file is not a clean sequential read. The reader must load delete rows, build a bitmap or a sorted set of positions, and skip. Equality deletes are worse: they are joins. If you ingest CDC as equality deletes against a high-cardinality key, you have rebuilt Spark's merge-on-read tax inside Trino. I would rather compact. Deletion vectors are the hopeful sequel.",
     "",
     "### Equality deletes, position deletes, and bitmaps",
     "",
@@ -367,7 +366,7 @@ avro-tools tojson "$MANIFEST_LIST" | jq '[.manifests[].added_files_count] | add'
     "The query planner you shipped in Trino or DuckDB is real, and it is worth understanding. It is also downstream. The planner that decided whether yesterday's dashboard would be 800 ms or 80 s was a pile of Avro, a snapshot-id, and whoever wrote the files. Treat that pile as a product. Compact it. Cache it. Log it. Then go argue about join reordering if you still have time.",
     "I will keep writing down the parts that surprised me in production: residual predicates that never pruned, delete files that were secretly joins, coordinators that were secretly namenodes. The through-line is the same. **Read the snapshot first.** The SQL is the second sentence.",
     "",
-    "Further reading I keep sending to people: the [Iceberg spec](https://iceberg.apache.org/spec/), Trino's Iceberg connector docs, and DuckDB's Iceberg extension notes. Internal to this site, the short companion is [compaction is a query-latency feature](/notes/zzreview-two-sentences).",
+    "Further reading I keep sending to people: the [Iceberg spec](https://iceberg.apache.org/spec/), Trino's Iceberg connector docs, and DuckDB's Iceberg extension notes.",
     "",
     "[^apply]: Apply order is data file, then position deletes, then equality deletes, filtered by sequence number. If your reader disagrees, you do not have a consistent table, you have a race.",
     "[^cache]: Cache metadata on snapshot-id. A TTL cache will serve a compacted table's old manifests until it expires, which is how dashboards go stale in a way that looks like a timezone bug.",
@@ -379,7 +378,6 @@ function posts(): PostSpec[] {
   return [
     {
       slug: FLAGSHIP_SLUG,
-      kind: "article",
       title: "The Iceberg metadata layer is the real query planner",
       summary:
         "File pruning is planning. A tour of snapshots, manifests, delete files, and why coordinator CPU is usually metadata, not SQL.",
@@ -397,7 +395,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-trino-metastore-rpc`,
-      kind: "article",
       title:
         "Why your Trino coordinator spends more time in Hive metastore RPCs than scanning Parquet footers on a cold Iceberg table",
       summary:
@@ -416,7 +413,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-iceberg-delete-files`,
-      kind: "article",
       title: "Predicate pushdown through Iceberg delete files",
       summary: null,
       status: "published",
@@ -432,7 +428,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-duckdb-parquet-afternoon`,
-      kind: "article",
       title: "A quiet afternoon with DuckDB on a 40 GB Parquet dump",
       summary:
         "No tags, one suspiciously long object key, and a reminder that a laptop can still beat a cluster.",
@@ -450,7 +445,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-dbt-iceberg-lineage`,
-      kind: "article",
       title: "End-to-end lineage from dbt models to Iceberg snapshots",
       summary:
         "A model name is not a table identity. Snapshot-ids, dbt contracts, and the eight tags this post is carrying for the tags page.",
@@ -477,7 +471,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-spark-vs-trino-yerevan`,
-      kind: "article",
       title: "Spark shuffle vs Trino exchange — նշումներ from Երևան 🇦🇲",
       summary:
         "Notes from a week of explaining why the same join is a shuffle in Spark and an exchange in Trino, written between espresso and the 44 bus.",
@@ -494,7 +487,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-postgres-catalog`,
-      kind: "article",
       title: "Postgres as a catalog, not a warehouse",
       summary:
         "REST catalogs, JDBC catalogs, and why the database that should store pointers should not store the lake.",
@@ -511,7 +503,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-trino-iceberg-stats`,
-      kind: "article",
       title: "Cost-based planning in Trino with Iceberg stats",
       summary:
         "NDVs from manifests, the lies of nested fields, and when to collect extra stats anyway.",
@@ -528,7 +519,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-superset-without-melting`,
-      kind: "article",
       title: "Building a Superset dashboard that does not melt the cluster",
       summary:
         "Tile SQL, cache keys, and the dashboard anti-pattern of nine cross-joins on the hottest Iceberg table.",
@@ -544,7 +534,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-query-engine-telemetry`,
-      kind: "article",
       title: "Observability for query engines: traces, not dashboards",
       summary:
         "Split time, planning time, and delete-apply time as spans. RED metrics are not enough.",
@@ -560,7 +549,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-dbt-incremental-iceberg`,
-      kind: "article",
       title: "dbt incremental models against Iceberg: merge, not mutate",
       summary:
         "Copy-on-write vs merge-on-read, and why lookback windows exist.",
@@ -576,7 +564,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-result-cache-honesty`,
-      kind: "article",
       title: "Caching query results without lying to users",
       summary:
         "TTL caches lie. Snapshot-keyed caches are honest, and sometimes slower in a way you can explain.",
@@ -592,7 +579,6 @@ function posts(): PostSpec[] {
     },
     {
       slug: `${MARKER}-rust-parquet-footer`,
-      kind: "article",
       title: "Reading Parquet footers from Rust without taking the whole file",
       summary:
         "Range requests, footer size, and why a 12 MB footer is a write bug.",
@@ -607,103 +593,7 @@ function posts(): PostSpec[] {
       ].join("\n\n"),
     },
     {
-      slug: `${MARKER}-two-sentences`,
-      kind: "note",
-      title: "Compaction is a query-latency feature",
-      summary: "A two-sentence note for the minimum reading-time path.",
-      status: "published",
-      publishedAt: "2026-08-01T07:00:00.000Z",
-      coverPath: null,
-      tagSlugs: [`${MARKER}-iceberg`],
-      body: "Rewrite small files before you tune the engine. If the snapshot still has tens of thousands of files, you are benchmarking your backlog, not Trino.",
-    },
-    {
-      slug: `${MARKER}-duckdb-httpfs`,
-      kind: "note",
-      title: "DuckDB httpfs and the illusion of local files",
-      summary: "Range requests over HTTPS are not a mount.",
-      status: "published",
-      publishedAt: "2026-06-02T09:10:00.000Z",
-      coverPath: null,
-      tagSlugs: [`${MARKER}-duckdb`],
-      body: [
-        "`httpfs` makes an object look like a file. It is still GET and Range. If you `read_parquet('https://...')` on a 20 GB object without projection, you will pull more than you think. Prefer Iceberg scans or a glob of files you already pruned in metadata.",
-        "Auth is the other illusion. A signed URL that expires mid-scan fails in a way that looks like a corrupt footer. Cache credentials, not the body, and keep the snapshot-id in the query so you can retry the same plan.",
-      ].join("\n\n"),
-    },
-    {
-      slug: `${MARKER}-iceberg-v3-deletes`,
-      kind: "note",
-      title: "Iceberg v3 deletion vectors, in practice",
-      summary: "Bitmaps instead of join-shaped equality deletes.",
-      status: "published",
-      publishedAt: "2026-04-28T11:00:00.000Z",
-      coverPath: null,
-      tagSlugs: [`${MARKER}-iceberg`, `${MARKER}-trino`],
-      body: [
-        "Deletion vectors are the grown-up form of position deletes: a bitmap per data file, stored so the reader does not parse a second Avro file of row numbers. I care because equality-delete storms are the merge-on-read tax I keep paying.",
-        "Engine support is uneven. Before turning v3 on in production, I want Trino, Spark, and the writer to agree on apply order. Until then, compaction remains the portability layer. See also the [flagship](/articles/zzreview-iceberg-metadata-planner) for the cost model this is trying to shrink.",
-      ].join("\n\n"),
-    },
-    {
-      slug: `${MARKER}-trino-468-memory`,
-      kind: "note",
-      title: "Notes on Trino query memory accounting",
-      summary: "User memory vs system memory, and why EXPLAIN ANALYZE disagrees with the UI.",
-      status: "published",
-      publishedAt: "2026-03-02T19:20:00.000Z",
-      coverPath: null,
-      tagSlugs: [`${MARKER}-trino`, `${MARKER}-observability`],
-      body: [
-        "Trino's memory pools still surprise people who came from Spark executors. A hash build that looks small in EXPLAIN ANALYZE can still trip a per-query limit because reservations are not the same as peak usage. I log both.",
-        "When a query dies with a memory error, I want the operator that reserved, the snapshot-id, and whether delete-file bitmaps were part of the reservation. \"Increase the pool\" is last. \"Stop applying 2 GB of equality deletes\" is first.",
-      ].join("\n\n"),
-    },
-    {
-      slug: `${MARKER}-rls-vs-warehouse-acl`,
-      kind: "note",
-      title: "Postgres RLS is not a warehouse ACL",
-      summary: "Row security in the catalog database does not follow the Parquet.",
-      status: "published",
-      publishedAt: "2026-01-20T08:50:00.000Z",
-      coverPath: null,
-      tagSlugs: [`${MARKER}-postgres`],
-      body: [
-        "RLS on a Postgres catalog protects the pointers, not the objects. If a user can guess an S3 key, RLS will not help. Warehouse ACLs belong in the engine (Trino grants, storage IAM, column masks) and they must use the same identity you put in query logs.",
-        "I still want RLS on catalog tables so a human SQL session cannot `UPDATE` a snapshot pointer. That is a different threat than \"analyst reads another tenant's events\". Do not combine the runbooks.",
-      ].join("\n\n"),
-    },
-    {
-      slug: `${MARKER}-arrow-flight-notes`,
-      kind: "note",
-      title: "Arrow Flight as a Trino exchange transport",
-      summary: "Fewer copies, more operational surface.",
-      status: "published",
-      publishedAt: "2025-12-09T16:35:00.000Z",
-      coverPath: null,
-      tagSlugs: [`${MARKER}-trino`, `${MARKER}-rust`],
-      body: [
-        "Flight is tempting as an exchange: columnar, multiplexed, backpressured. The cost is another network protocol on the workers and a new way to stall when a client forgets to read. I would rather have boring HTTP/2-ish exchanges that we can trace than a custom Flight service nobody pages correctly.",
-        "Where Flight shines for me is DuckDB or a Rust service pulling a Trino result without CSV. That is an API, not an internal exchange. Keep those lines distinct in architecture reviews.",
-      ].join("\n\n"),
-    },
-    {
-      slug: `${MARKER}-compaction-debt`,
-      kind: "note",
-      title: "Small-file debt is a metadata problem",
-      summary: "The interest rate is paid in planning time.",
-      status: "published",
-      publishedAt: "2025-09-15T12:25:00.000Z",
-      coverPath: null,
-      tagSlugs: [`${MARKER}-iceberg`, `${MARKER}-data-modeling`],
-      body: [
-        "Small files hurt scans. They hurt planning more. Each file is a row in a manifest, each manifest is a GET, each GET is coordinator time. Partitioning that matches query predicates reduces files in the plan; compaction reduces files in the snapshot. You need both.",
-        "If a streaming writer must emit small files, the compaction job is part of the writer, not a weekend task. Put the target file size next to the dbt model grain. They are the same decision.",
-      ].join("\n\n"),
-    },
-    {
       slug: `${MARKER}-draft-spark-aqe`,
-      kind: "article",
       title: "What Spark AQE gets right that Trino still refuses to",
       summary: "Draft: adaptive broadcast conversion mid-query, and why coordinators hate it.",
       status: "draft",
@@ -717,19 +607,7 @@ function posts(): PostSpec[] {
       ].join("\n\n"),
     },
     {
-      slug: `${MARKER}-draft-note-catalogs`,
-      kind: "note",
-      title: "One catalog to confuse them all",
-      summary: "Draft note: Hive, Glue, REST, JDBC — pick one per env.",
-      status: "draft",
-      publishedAt: null,
-      coverPath: null,
-      tagSlugs: [],
-      body: "Draft note, not published. If this renders on /notes, something is wrong with the status filter.",
-    },
-    {
       slug: `${MARKER}-archived-hive-listing`,
-      kind: "article",
       title: "Stop listing Hive partitions from the coordinator",
       summary: "Archived: superseded by the Iceberg metadata post. Must not leak publicly.",
       status: "archived",
@@ -1105,7 +983,6 @@ async function main(): Promise<void> {
       .from("posts")
       .insert({
         slug: spec.slug,
-        kind: spec.kind,
         title: spec.title,
         summary: spec.summary,
         body_md: spec.body,
@@ -1135,7 +1012,7 @@ async function main(): Promise<void> {
     }
 
     console.log(
-      `  ${index + 1}/${postSpecs.length} ${spec.slug} (${spec.kind}, ${spec.status}, ${rendered.wordCount} words, ${rendered.readingMinutes} min, toc=${rendered.toc.length})`,
+      `  ${index + 1}/${postSpecs.length} ${spec.slug} (${spec.status}, ${rendered.wordCount} words, ${rendered.readingMinutes} min, toc=${rendered.toc.length})`,
     );
   }
   writeManifest(manifestPath, manifest);

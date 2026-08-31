@@ -15,6 +15,6 @@ export function absoluteUrl(path = "/"): string {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
-export function postPath(kind: "article" | "note", slug: string): string {
-  return kind === "article" ? `/articles/${slug}` : `/notes/${slug}`;
+export function postPath(slug: string): string {
+  return `/articles/${slug}`;
 }

@@ -12,7 +12,6 @@ test.skip(
 const pages: { path: string; text: RegExp }[] = [
   { path: "/", text: /cv/i },
   { path: "/articles", text: /articles/i },
-  { path: "/notes", text: /notes/i },
   { path: "/tags", text: /tags/i },
   { path: "/about", text: /about|blog/i },
   { path: "/projects", text: /projects/i },

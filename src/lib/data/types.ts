@@ -14,7 +14,6 @@ export type Tag = {
 export type PublishedPostListItem = {
   id: string;
   slug: string;
-  kind: "article" | "note";
   title: string;
   summary: string | null;
   cover_path: string | null;

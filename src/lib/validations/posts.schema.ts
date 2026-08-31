@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-export const postKindSchema = z.enum(["article", "note"]);
 export const postStatusSchema = z.enum(["draft", "published", "archived"]);
 
 export const slugSchema = z
@@ -11,7 +10,6 @@ export const slugSchema = z
 
 export const createPostSchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(200),
-  kind: postKindSchema,
 });
 
 export const autosavePostSchema = z.object({
@@ -20,7 +18,6 @@ export const autosavePostSchema = z.object({
   slug: slugSchema,
   summary: z.string().max(2000).optional().nullable(),
   body_md: z.string(),
-  kind: postKindSchema,
   tagSlugs: z.array(z.string()).max(30).optional(),
   cover_path: z.string().max(2000).optional().nullable(),
   canonical_url: z.string().max(2000).optional().nullable(),
@@ -41,7 +38,6 @@ export const previewMarkdownSchema = z.object({
 
 export type CreatePostInput = z.infer<typeof createPostSchema>;
 export type AutosavePostInput = z.infer<typeof autosavePostSchema>;
-export type PostKind = z.infer<typeof postKindSchema>;
 export type PostStatus = z.infer<typeof postStatusSchema>;
 
 export function firstZodError(error: z.ZodError): string {

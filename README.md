@@ -1,6 +1,6 @@
 # Personal technical blog
 
-Articles, notes, projects, and an about/timeline page. I write in `/studio`; everyone else reads published rows through Postgres RLS.
+Articles, projects, and an about/timeline page. I write in `/studio`; everyone else reads published rows through Postgres RLS.
 
 ## Stack
 

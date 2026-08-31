@@ -12,7 +12,7 @@ export default async function StudioPostsPage() {
 
   const { data: posts } = await supabase
     .from("posts")
-    .select("id, title, slug, kind, status, updated_at, published_at")
+    .select("id, title, slug, status, updated_at, published_at")
     .order("updated_at", { ascending: false });
 
   const list = posts ?? [];
@@ -41,7 +41,6 @@ export default async function StudioPostsPage() {
             <thead className="border-b border-border bg-muted/50">
               <tr>
                 <th className="px-4 py-2.5 font-medium">Title</th>
-                <th className="px-4 py-2.5 font-medium">Kind</th>
                 <th className="px-4 py-2.5 font-medium">Status</th>
                 <th className="px-4 py-2.5 font-medium">Updated</th>
               </tr>
@@ -57,9 +56,6 @@ export default async function StudioPostsPage() {
                       {post.title}
                     </Link>
                     <p className="text-xs text-muted-foreground">{post.slug}</p>
-                  </td>
-                  <td className="px-4 py-3 capitalize text-muted-foreground">
-                    {post.kind}
                   </td>
                   <td className="px-4 py-3">
                     <StatusBadge status={post.status} />

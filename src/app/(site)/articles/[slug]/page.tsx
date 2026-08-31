@@ -26,12 +26,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPublishedPostBySlug(slug);
 
-  if (!post || post.kind !== "article") {
+  if (!post) {
     return { title: "Article" };
   }
 
   const description = post.summary ?? "";
-  const path = postPath("article", post.slug);
+  const path = postPath(post.slug);
   const meta = publicPageMetadata({
     title: post.title,
     description,
@@ -57,7 +57,7 @@ export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
   const post = await getPublishedPostBySlug(slug);
 
-  if (!post || post.kind !== "article") {
+  if (!post) {
     notFound();
   }
 
@@ -69,7 +69,7 @@ export default async function ArticlePage({ params }: Props) {
           breadcrumbJsonLd([
             { name: "Home", path: "/" },
             { name: "Articles", path: "/articles" },
-            { name: post.title, path: postPath("article", post.slug) },
+            { name: post.title, path: postPath(post.slug) },
           ]),
         ]}
       />

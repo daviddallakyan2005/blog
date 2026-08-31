@@ -5,7 +5,6 @@ import { ThemeToggle } from "@/components/site/theme-toggle";
 
 const NAV = [
   { href: "/articles", label: "Articles" },
-  { href: "/notes", label: "Notes" },
   { href: "/tags", label: "Tags" },
   { href: "/projects", label: "Projects" },
   { href: "/about", label: "About" },

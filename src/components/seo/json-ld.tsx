@@ -60,7 +60,7 @@ export function websiteJsonLd() {
 }
 
 export function blogPostingJsonLd(post: PublishedPost) {
-  const url = absoluteUrl(postPath(post.kind, post.slug));
+  const url = absoluteUrl(postPath(post.slug));
 
   return {
     "@context": "https://schema.org",

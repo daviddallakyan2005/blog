@@ -14,7 +14,7 @@ Review without editing. Lens is editorial quality and technical accuracy, not vi
 1. **Truth** — claims, APIs, versions, and commands match the repo or cited docs. No invented APIs.
 2. **Code samples** — compile or run in the stated language; imports exist; no omitted critical steps presented as complete. Prefer languages in the Shiki allowlist (`src/lib/markdown/render.ts`).
 3. **Pipeline** — preview and publish still share `renderMarkdown` + sanitize. HTML persisted on publish is not a second renderer.
-4. **Structure** — title, summary, headings, and slug are coherent. Articles vs notes (`posts.kind`) used correctly.
+4. **Structure** — title, summary, headings, and slug are coherent.
 5. **Safety** — no secrets, live service-role keys, or unpublished draft leakage in samples or frontmatter.
 
 Each finding: severity, path (or draft file), excerpt, why it fails a reader, smallest fix.

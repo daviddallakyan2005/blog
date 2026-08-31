@@ -4,7 +4,6 @@ import { createClient } from "@/lib/supabase/anon";
 
 export type SearchResult = {
   slug: string;
-  kind: string;
   title: string;
   snippet: string;
   rank: number;

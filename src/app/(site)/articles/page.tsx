@@ -39,7 +39,7 @@ async function ArticlesList({
   const page = Math.max(1, Number.parseInt(raw ?? "1", 10) || 1);
   const [posts, total] = await Promise.all([
     getPublishedArticles(PER_PAGE, (page - 1) * PER_PAGE),
-    countPublishedPosts("article"),
+    countPublishedPosts(),
   ]);
   const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
 

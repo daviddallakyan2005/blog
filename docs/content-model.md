@@ -7,7 +7,7 @@ Source of truth: `supabase/migrations/`. Types: `src/lib/database.types.ts` (gen
 | Table | Role |
 | --- | --- |
 | `profiles` | `auth.users` 1:1. `role` is `owner` \| `reader` (default). Trigger inserts on signup; clients cannot INSERT. |
-| `posts` | Articles and notes. `kind`, `status` (`draft` \| `published` \| `archived`), `body_md` / `body_html`, toc, cover, reading stats, `search_vector`. |
+| `posts` | Articles. `status` (`draft` \| `published` \| `archived`), `body_md` / `body_html`, toc, cover, reading stats, `search_vector`. |
 | `tags` / `post_tags` | Taxonomy. |
 | `post_revisions` | Owner-only history. |
 | `media_assets` | Metadata for Storage `media` bucket. |

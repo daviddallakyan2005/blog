@@ -4,7 +4,7 @@ Live UI and `src/app/globals.css` are authoritative. This file grounds agents; i
 
 ## Product
 
-A personal technical blog. Readers come for articles, notes, projects, and an about/timeline page. Studio is a quiet owner tool, not the public brand.
+A personal technical blog. Readers come for articles, projects, and an about/timeline page. Studio is a quiet owner tool, not the public brand.
 
 Feel: calm, typographic, paper-and-ink. Not a SaaS dashboard.
 

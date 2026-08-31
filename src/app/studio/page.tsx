@@ -12,7 +12,7 @@ export default async function StudioDashboardPage() {
 
   const { data: posts } = await supabase
     .from("posts")
-    .select("id, title, slug, kind, status, updated_at")
+    .select("id, title, slug, status, updated_at")
     .order("updated_at", { ascending: false });
 
   const list = posts ?? [];
@@ -75,7 +75,6 @@ export default async function StudioDashboardPage() {
                   <div className="min-w-0">
                     <p className="truncate font-medium">{post.title}</p>
                     <p className="text-xs text-muted-foreground">
-                      {post.kind} ·{" "}
                       {formatDistanceToNow(new Date(post.updated_at), {
                         addSuffix: true,
                       })}

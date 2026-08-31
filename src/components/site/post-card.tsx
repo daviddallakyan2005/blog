@@ -3,10 +3,10 @@ import Link from "next/link";
 import { TagPill } from "@/components/site/tag-pill";
 import type { PublishedPostListItem } from "@/lib/data/types";
 import { formatPostDate, formatReadingTime } from "@/lib/format";
+import { postPath } from "@/lib/seo/site";
 
 export function PostCard({ post }: { post: PublishedPostListItem }) {
-  const href =
-    post.kind === "note" ? `/notes/${post.slug}` : `/articles/${post.slug}`;
+  const href = postPath(post.slug);
   const date = formatPostDate(post.published_at);
 
   return (

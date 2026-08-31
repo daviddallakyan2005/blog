@@ -14,7 +14,6 @@ alwaysApply: false
 
 ## Editorial
 
-- Articles vs notes are `posts.kind`. Do not invent a third public kind without a migration.
 - Code samples in posts should be real enough to compile or run in the stated language. Prefer languages already in the Shiki allowlist in `render.ts`.
 - Cover images go through media actions + the `media` bucket. Provide alt text.
 

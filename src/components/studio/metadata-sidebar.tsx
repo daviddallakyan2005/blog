@@ -4,7 +4,7 @@ import { useState } from "react";
 import { X } from "lucide-react";
 
 import { slugify } from "@/lib/slug";
-import type { PostKind, PostStatus } from "@/lib/validations/posts.schema";
+import type { PostStatus } from "@/lib/validations/posts.schema";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,7 +28,6 @@ export type EditorTag = {
 type MetadataSidebarProps = {
   slug: string;
   summary: string;
-  kind: PostKind;
   tags: EditorTag[];
   coverPath: string;
   canonicalUrl: string;
@@ -36,7 +35,6 @@ type MetadataSidebarProps = {
   busy?: boolean;
   onSlugChange: (value: string) => void;
   onSummaryChange: (value: string) => void;
-  onKindChange: (value: PostKind) => void;
   onTagsChange: (tags: EditorTag[]) => void;
   onCoverPathChange: (value: string) => void;
   onCanonicalUrlChange: (value: string) => void;
@@ -55,7 +53,6 @@ const STATUS_LABEL: Record<PostStatus, string> = {
 export function MetadataSidebar({
   slug,
   summary,
-  kind,
   tags,
   coverPath,
   canonicalUrl,
@@ -63,7 +60,6 @@ export function MetadataSidebar({
   busy,
   onSlugChange,
   onSummaryChange,
-  onKindChange,
   onTagsChange,
   onCoverPathChange,
   onCanonicalUrlChange,
@@ -159,20 +155,6 @@ export function MetadataSidebar({
           autoComplete="off"
           spellCheck={false}
         />
-      </div>
-
-      <div className="grid gap-2">
-        <Label htmlFor="post-kind">Kind</Label>
-        <select
-          id="post-kind"
-          aria-label="Kind"
-          value={kind}
-          onChange={(event) => onKindChange(event.target.value as PostKind)}
-          className="flex h-9 w-full rounded-md border border-border bg-background px-3 py-1 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-        >
-          <option value="article">Article</option>
-          <option value="note">Note</option>
-        </select>
       </div>
 
       <div className="grid gap-2">

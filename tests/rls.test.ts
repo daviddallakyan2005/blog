@@ -70,7 +70,6 @@ describeRls("RLS", () => {
       .from("posts")
       .insert({
         slug,
-        kind: "article",
         title: slug,
         status: "draft",
         body_md: "draft body",
@@ -97,7 +96,6 @@ describeRls("RLS", () => {
       .from("posts")
       .insert({
         slug,
-        kind: "article",
         title: slug,
         status: "published",
         published_at: new Date().toISOString(),
@@ -122,7 +120,6 @@ describeRls("RLS", () => {
   it("anon cannot insert posts", async () => {
     const { error } = await anonClient().from("posts").insert({
       slug: uniqueSlug("anon-insert"),
-      kind: "note",
       title: "Anon insert should fail",
       status: "draft",
     });
@@ -137,7 +134,6 @@ describeRls("RLS", () => {
       .from("posts")
       .insert({
         slug: uniqueSlug("search"),
-        kind: "article",
         title,
         status: "draft",
         body_md: title,
@@ -165,7 +161,6 @@ describeRls("RLS", () => {
       .from("posts")
       .insert({
         slug: uniqueSlug("comment"),
-        kind: "article",
         title: "Comment target",
         status: "published",
         published_at: new Date().toISOString(),
@@ -253,7 +248,6 @@ describeRls("RLS", () => {
       .from("posts")
       .insert({
         slug: uniqueSlug("draft-comment"),
-        kind: "article",
         title: "Draft comment target",
         status: "draft",
         body_md: "draft",
@@ -281,7 +275,6 @@ describeRls("RLS", () => {
       .from("posts")
       .insert({
         slug: uniqueSlug("rate-limit"),
-        kind: "article",
         title: "Rate limit target",
         status: "published",
         published_at: new Date().toISOString(),
@@ -321,7 +314,6 @@ describeRls("RLS", () => {
       .from("posts")
       .insert({
         slug: uniqueSlug("hidden-comments"),
-        kind: "article",
         title: "Unpublished comment host",
         status: "draft",
         body_md: "draft",

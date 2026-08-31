@@ -246,7 +246,6 @@ export type Database = {
           cover_path: string | null
           created_at: string
           id: string
-          kind: string
           published_at: string | null
           reading_minutes: number
           search_vector: unknown
@@ -267,7 +266,6 @@ export type Database = {
           cover_path?: string | null
           created_at?: string
           id?: string
-          kind: string
           published_at?: string | null
           reading_minutes?: number
           search_vector?: unknown
@@ -288,7 +286,6 @@ export type Database = {
           cover_path?: string | null
           created_at?: string
           id?: string
-          kind?: string
           published_at?: string | null
           reading_minutes?: number
           search_vector?: unknown
@@ -530,7 +527,6 @@ export type Database = {
       search_posts: {
         Args: { limit_n?: number; q: string }
         Returns: {
-          kind: string
           rank: number
           slug: string
           snippet: string

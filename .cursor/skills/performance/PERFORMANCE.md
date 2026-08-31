@@ -28,9 +28,9 @@ Never put `cookies()` / the session client inside a cached function.
 ## Waterfalls
 
 ```ts
-const [articles, notes] = await Promise.all([
+const [articles, projects] = await Promise.all([
   getPublishedArticles(),
-  getPublishedNotes(),
+  getAllProjects(),
 ]);
 ```
 
@@ -40,7 +40,7 @@ Start independent work together. Layouts should not sequentially refetch setting
 
 - Select list/detail column sets (`POST_LIST_COLUMNS` / `POST_DETAIL_COLUMNS`).
 - Paginate or cap lists.
-- Indexes already exist on `(status, published_at)`, `kind`, `search_vector`, project featured/sort. Add indexes only for new predicates.
+- Indexes already exist on `(status, published_at)`, `search_vector`, project featured/sort. Add indexes only for new predicates.
 - `search_posts` is SECURITY DEFINER and published-only — do not reimplement search in the app with a broad `ilike` scan.
 
 ## Regions

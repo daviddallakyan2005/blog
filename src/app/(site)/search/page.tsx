@@ -17,7 +17,7 @@ export async function generateMetadata({
   const { q } = await searchParams;
   const meta = publicPageMetadata({
     title: "Search",
-    description: "Search published articles and notes.",
+    description: "Search published articles.",
     path: "/search",
   });
 
@@ -36,7 +36,7 @@ export default function SearchPage({ searchParams }: SearchPageProps) {
     <div className="mx-auto max-w-prose px-6 py-16">
       <h1 className="text-3xl font-semibold tracking-tight">Search</h1>
       <p className="mt-3 text-muted-foreground">
-        Find published articles and notes.
+        Find published articles.
       </p>
       <Suspense fallback={<SearchForm q="" />}>
         <SearchFormFromParams searchParams={searchParams} />
@@ -89,9 +89,7 @@ async function SearchResults({
 }
 
 function postHref(result: SearchResult): string {
-  return result.kind === "note"
-    ? `/notes/${result.slug}`
-    : `/articles/${result.slug}`;
+  return `/articles/${result.slug}`;
 }
 
 function snippetHtml(snippet: string): string {
@@ -123,16 +121,13 @@ function ResultsList({ q, results }: { q: string; results: SearchResult[] }) {
   return (
     <ol className="mt-10 space-y-8">
       {results.map((result) => (
-        <li key={`${result.kind}:${result.slug}`}>
+        <li key={result.slug}>
           <Link
             href={postHref(result)}
             className="text-lg font-medium tracking-tight hover:text-accent"
           >
             {result.title}
           </Link>
-          <p className="mt-1 text-xs uppercase tracking-wide text-muted-foreground">
-            {result.kind}
-          </p>
           {result.snippet ? (
             <p
               className="mt-2 text-sm text-muted-foreground [&_mark]:bg-accent/20 [&_mark]:text-foreground"

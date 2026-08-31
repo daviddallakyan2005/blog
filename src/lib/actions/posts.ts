@@ -130,7 +130,6 @@ export async function createPost(
     .from("posts")
     .insert({
       title: parsed.data.title,
-      kind: parsed.data.kind,
       slug,
       status: "draft",
     })
@@ -231,7 +230,7 @@ export async function autosavePost(
   }
 
   const supabase = await createClient();
-  const { id, title, slug, body_md, kind, tagSlugs } = parsed.data;
+  const { id, title, slug, body_md, tagSlugs } = parsed.data;
 
   const { data: existing, error: loadError } = await supabase
     .from("posts")
@@ -260,7 +259,6 @@ export async function autosavePost(
       toc_json: rendered.toc as unknown as Json,
       reading_minutes: rendered.readingMinutes,
       word_count: rendered.wordCount,
-      kind,
       cover_path: emptyToNull(parsed.data.cover_path),
       canonical_url: emptyToNull(parsed.data.canonical_url),
     })

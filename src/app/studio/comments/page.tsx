@@ -18,8 +18,8 @@ type PendingRow = {
     | { display_name: string | null; github_username: string | null }[]
     | null;
   posts:
-    | { title: string; slug: string; kind: string }
-    | { title: string; slug: string; kind: string }[]
+    | { title: string; slug: string }
+    | { title: string; slug: string }[]
     | null;
 };
 
@@ -37,7 +37,7 @@ export default async function StudioCommentsPage() {
   const { data } = await supabase
     .from("comments")
     .select(
-      "id, body, created_at, post_id, profiles!comments_author_id_fkey (display_name, github_username), posts!comments_post_id_fkey (title, slug, kind)",
+      "id, body, created_at, post_id, profiles!comments_author_id_fkey (display_name, github_username), posts!comments_post_id_fkey (title, slug)",
     )
     .eq("status", "pending")
     .order("created_at", { ascending: true });
@@ -83,7 +83,7 @@ export default async function StudioCommentsPage() {
                 </div>
                 {post ? (
                   <p className="text-xs text-muted-foreground">
-                    On {post.kind}: {post.title}
+                    On {post.title}
                   </p>
                 ) : null}
                 <p className="whitespace-pre-wrap text-sm leading-relaxed">

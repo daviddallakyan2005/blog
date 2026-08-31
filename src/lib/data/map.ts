@@ -21,7 +21,6 @@ type PostTagJoin = {
 export type PostListRow = {
   id: string;
   slug: string;
-  kind: string;
   title: string;
   summary: string | null;
   cover_path: string | null;
@@ -40,7 +39,6 @@ export type PostDetailRow = PostListRow & {
 export const POST_LIST_COLUMNS = `
   id,
   slug,
-  kind,
   title,
   summary,
   cover_path,
@@ -58,7 +56,6 @@ export const POST_LIST_COLUMNS = `
 export const POST_DETAIL_COLUMNS = `
   id,
   slug,
-  kind,
   title,
   summary,
   cover_path,
@@ -130,15 +127,10 @@ function isTocItem(value: unknown): value is TocItem {
   );
 }
 
-export function mapListPost(row: PostListRow): PublishedPostListItem | null {
-  if (row.kind !== "article" && row.kind !== "note") {
-    return null;
-  }
-
+export function mapListPost(row: PostListRow): PublishedPostListItem {
   return {
     id: row.id,
     slug: row.slug,
-    kind: row.kind,
     title: row.title,
     summary: row.summary,
     cover_path: row.cover_path,
@@ -148,14 +140,9 @@ export function mapListPost(row: PostListRow): PublishedPostListItem | null {
   };
 }
 
-export function mapDetailPost(row: PostDetailRow): PublishedPost | null {
-  const base = mapListPost(row);
-  if (!base) {
-    return null;
-  }
-
+export function mapDetailPost(row: PostDetailRow): PublishedPost {
   return {
-    ...base,
+    ...mapListPost(row),
     body_html: row.body_html,
     toc_json: parseToc(row.toc_json),
     canonical_url: row.canonical_url,
@@ -166,8 +153,5 @@ export function mapDetailPost(row: PostDetailRow): PublishedPost | null {
 export function compactPosts(
   rows: PostListRow[] | null,
 ): PublishedPostListItem[] {
-  return (rows ?? []).flatMap((row) => {
-    const post = mapListPost(row);
-    return post ? [post] : [];
-  });
+  return (rows ?? []).map(mapListPost);
 }

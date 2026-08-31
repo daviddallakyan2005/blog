@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { publicPageMetadata } from "./metadata";
+import { postPath } from "./site";
 
 describe("publicPageMetadata", () => {
   it("sets canonical, Open Graph, and Twitter for a listing path", () => {
@@ -37,5 +38,11 @@ describe("publicPageMetadata", () => {
     expect(meta.alternates?.canonical).toBe("/");
     expect(meta.openGraph).toMatchObject({ url: "/" });
     expect(meta.twitter).toMatchObject({ card: "summary_large_image" });
+  });
+});
+
+describe("postPath", () => {
+  it("returns an articles path for a slug", () => {
+    expect(postPath("hello")).toBe("/articles/hello");
   });
 });

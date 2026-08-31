@@ -59,7 +59,7 @@ export async function getTagBySlug(slug: string): Promise<Tag | null> {
 }
 
 const TAG_FILTERED_POST_COLUMNS = `
-  id, slug, kind, title, summary, cover_path, published_at, reading_minutes,
+  id, slug, title, summary, cover_path, published_at, reading_minutes,
   post_tags (
     tags (id, name, slug)
   ),
