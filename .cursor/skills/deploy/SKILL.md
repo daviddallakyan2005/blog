@@ -38,6 +38,7 @@ If yes: commit (they asked), then `git push` to `main`. Prefer that over `vercel
 1. **Vercel logs** — find the deployment for this commit (`list_deployments`), then watch `get_deployment_build_logs` until READY or ERROR. If ERROR, report the failing lines and stop. If the site 5xxs after READY, check `get_runtime_logs`.
 2. **Supabase migrations** — if this push added files under `supabase/migrations/`, confirm those filenames are applied on the production project (`list_migrations`). If there were no new migrations, say so. Do not `db push`.
 3. **Live site** — GET production `https://daviddallakyan.com/` and `/articles` (plus any route this change affects). Expect 200 and no error page. Do not mutate data.
+4. **Search Console** — if this change added, removed, or redirected a public URL, follow `seo` (resubmit sitemap; request indexing only for live 200s; inspect removed URLs, do not index 404s). Skip for CSS, copy, or studio-only deploys.
 
 After first production GitHub login, grant owner:
 

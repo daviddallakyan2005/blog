@@ -67,7 +67,7 @@ Owner pastes or edits, sets tags/cover, publishes. The action persists HTML/toc/
 
 Cover images go through media actions + the `media` bucket. Body diagrams: upload SVG/PNG in the studio editor (see [diagrams.md](diagrams.md)); replace any `TO_UPLOAD:` placeholders. Provide real alt text — not the filename stem.
 
-After publish, sitemap and `/feed.xml` pick up the row on the next cache miss / tag bust.
+After publish, sitemap and `/feed.xml` pick up the row on the next cache miss / tag bust. Then `seo`: GET the live article URL (200), then **Request indexing** for that URL in Search Console.
 
 ## Constraints
 

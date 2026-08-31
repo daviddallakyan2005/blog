@@ -15,5 +15,6 @@ alwaysApply: false
 - `/llms.txt` lists the site name, description, and published article/project absolute URLs only. No drafts or studio.
 - Studio routes set `robots: { index: false, follow: false }`. Articles with a `q` or `tag` query is `noindex, follow`.
 - After new public routes, update sitemap, robots (if needed), and JSON-LD in the same change.
+- After production serves a public URL add, remove, or redirect, follow the `seo` skill Search Console steps. Do not keep a second sitemap in GSC.
 
 Audit workflow: `seo` skill.
