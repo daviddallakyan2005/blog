@@ -36,15 +36,16 @@ export function PostArticle({
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
             {post.title}
           </h1>
-          <div className="mt-4 text-sm text-muted-foreground">
-            {date ? (
-              <time dateTime={post.published_at ?? undefined}>{date}</time>
-            ) : null}
-            {date ? <span aria-hidden="true"> · </span> : null}
-            <span>{formatReadingTime(post.reading_minutes)}</span>
-            <span aria-hidden="true"> · </span>
-            <span>{formatCount(post.view_count, "view")}</span>
-            <span aria-hidden="true"> · </span>
+          <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+            <div className="min-w-0">
+              {date ? (
+                <time dateTime={post.published_at ?? undefined}>{date}</time>
+              ) : null}
+              {date ? <span aria-hidden="true"> · </span> : null}
+              <span>{formatReadingTime(post.reading_minutes)}</span>
+              <span aria-hidden="true"> · </span>
+              <span>{formatCount(post.view_count, "view")}</span>
+            </div>
             <PostLikeButton postId={post.id} likeCount={post.like_count} />
           </div>
           <RecordPostView postId={post.id} />

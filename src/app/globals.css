@@ -17,6 +17,7 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-ring: var(--accent);
+  --color-like: var(--like);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -39,6 +40,7 @@
   --border: oklch(0.9 0.012 85);
   --card: oklch(0.995 0.004 85);
   --card-foreground: oklch(0.22 0.025 55);
+  --like: oklch(0.42 0.16 18);
 }
 
 .dark {
@@ -51,6 +53,7 @@
   --border: oklch(0.3 0.015 55);
   --card: oklch(0.21 0.015 55);
   --card-foreground: oklch(0.93 0.01 85);
+  --like: oklch(0.76 0.11 18);
 }
 
 html {

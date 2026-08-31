@@ -3,12 +3,39 @@
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Heart } from "lucide-react";
 import { toast } from "sonner";
 
 import { togglePostLike } from "@/lib/actions/likes";
 import { formatCount } from "@/lib/format";
 import { createClient } from "@/lib/supabase/browser";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+
+const chipClassName =
+  "shrink-0 text-foreground motion-reduce:transition-none";
+
+function LikeChipContent({
+  liked,
+  count,
+}: {
+  liked: boolean;
+  count: number;
+}) {
+  return (
+    <>
+      <Heart
+        aria-hidden="true"
+        className={cn(
+          liked && "fill-current text-like",
+          "motion-safe:transition-colors",
+        )}
+      />
+      <span>{liked ? "Liked" : "Like"}</span>
+      <span className="tabular-nums">{count}</span>
+    </>
+  );
+}
 
 export function PostLikeButton({
   postId,
@@ -64,19 +91,32 @@ export function PostLikeButton({
   }, [postId]);
 
   if (signedIn === null) {
-    return <span>{formatCount(likeCount, "like")}</span>;
+    return (
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        disabled
+        aria-busy="true"
+        aria-label={formatCount(likeCount, "like")}
+        className={cn(chipClassName, "disabled:opacity-100")}
+      >
+        <LikeChipContent liked={false} count={likeCount} />
+      </Button>
+    );
   }
 
   if (!signedIn) {
     const next = `/login?next=${encodeURIComponent(pathname)}`;
     return (
-      <span>
-        <span>{formatCount(likeCount, "like")}</span>
-        <span aria-hidden="true"> · </span>
-        <Link href={next} className="text-accent underline underline-offset-4">
-          Sign in to like
+      <Button variant="outline" size="sm" className={chipClassName} asChild>
+        <Link
+          href={next}
+          aria-label={`Sign in to like. ${formatCount(likeCount, "like")}`}
+        >
+          <LikeChipContent liked={false} count={likeCount} />
         </Link>
-      </span>
+      </Button>
     );
   }
 
@@ -111,21 +151,18 @@ export function PostLikeButton({
   }
 
   return (
-    <span>
-      <span>{formatCount(count, "like")}</span>
-      <span aria-hidden="true"> · </span>
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        disabled={pending}
-        aria-busy={pending}
-        aria-pressed={liked}
-        onClick={onToggle}
-        className="h-auto min-h-0 px-0 py-0 text-sm font-normal text-muted-foreground hover:bg-transparent hover:text-foreground"
-      >
-        {liked ? "Liked" : "Like"}
-      </Button>
-    </span>
+    <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      disabled={pending}
+      aria-busy={pending}
+      aria-pressed={liked}
+      aria-label={`${liked ? "Liked" : "Like"}, ${formatCount(count, "like")}`}
+      onClick={onToggle}
+      className={chipClassName}
+    >
+      <LikeChipContent liked={liked} count={count} />
+    </Button>
   );
 }
