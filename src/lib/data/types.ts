@@ -72,7 +72,7 @@ export type Project = {
 export type ProjectListItem = Omit<Project, "description_html">;
 
 export type TimelineKind =
-  "role" | "education" | "talk" | "award" | "oss_contribution";
+  "role" | "education" | "talk" | "award" | "oss_contribution" | "press";
 
 export type TimelineEntry = {
   id: string;

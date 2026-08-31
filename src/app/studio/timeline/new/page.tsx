@@ -11,7 +11,7 @@ export default async function NewTimelinePage() {
           New timeline entry
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Roles, education, talks, awards, and open-source work.
+          Roles, education, talks, awards, open-source work, and elsewhere.
         </p>
       </div>
       <TimelineForm />

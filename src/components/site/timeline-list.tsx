@@ -8,6 +8,7 @@ const KIND_ORDER: TimelineKind[] = [
   "talk",
   "award",
   "oss_contribution",
+  "press",
 ];
 
 const KIND_LABELS: Record<TimelineKind, string> = {
@@ -16,6 +17,7 @@ const KIND_LABELS: Record<TimelineKind, string> = {
   talk: "Talks",
   award: "Awards",
   oss_contribution: "Open source",
+  press: "Elsewhere",
 };
 
 function dateRange(entry: TimelineEntry): string | null {
@@ -29,14 +31,29 @@ function dateRange(entry: TimelineEntry): string | null {
 
 function TimelineItem({ entry }: { entry: TimelineEntry }) {
   const range = dateRange(entry);
+  const articleUrl = entry.kind === "press" ? entry.org_url : null;
+  const orgUrl = entry.kind === "press" ? null : entry.org_url;
 
   return (
     <article className="border-b border-border/80 py-6 last:border-b-0">
-      <h3 className="font-semibold tracking-tight">{entry.title}</h3>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {entry.org_url && entry.org ? (
+      <h3 className="font-semibold tracking-tight">
+        {articleUrl ? (
           <a
-            href={entry.org_url}
+            href={articleUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="text-accent underline-offset-4 hover:underline"
+          >
+            {entry.title}
+          </a>
+        ) : (
+          entry.title
+        )}
+      </h3>
+      <p className="mt-1 text-sm text-muted-foreground">
+        {orgUrl && entry.org ? (
+          <a
+            href={orgUrl}
             target="_blank"
             rel="noreferrer"
             className="text-accent underline-offset-4 hover:underline"

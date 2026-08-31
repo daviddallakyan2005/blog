@@ -38,6 +38,23 @@ export function personJsonLd(extraSameAs: string[] = []) {
   };
 }
 
+export function pressSameAsUrls(
+  entries: { kind: string; org_url: string | null }[],
+): string[] {
+  const urls: string[] = [];
+  for (const entry of entries) {
+    if (entry.kind !== "press") {
+      continue;
+    }
+    const url = entry.org_url;
+    if (!url || !/^https?:\/\//i.test(url) || urls.includes(url)) {
+      continue;
+    }
+    urls.push(url);
+  }
+  return urls;
+}
+
 export function websiteJsonLd() {
   return {
     "@context": "https://schema.org",

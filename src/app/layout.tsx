@@ -3,8 +3,14 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "sonner";
 
-import { JsonLd, personJsonLd, websiteJsonLd } from "@/components/seo/json-ld";
+import {
+  JsonLd,
+  personJsonLd,
+  pressSameAsUrls,
+  websiteJsonLd,
+} from "@/components/seo/json-ld";
 import { getSiteSettings } from "@/lib/data/settings";
+import { getTimelineEntries } from "@/lib/data/timeline";
 import type { SiteSocial } from "@/lib/data/types";
 import {
   AUTHOR_NAME,
@@ -66,7 +72,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = await getSiteSettings();
+  const [settings, timeline] = await Promise.all([
+    getSiteSettings(),
+    getTimelineEntries(),
+  ]);
 
   return (
     <html
@@ -78,7 +87,10 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
         <JsonLd
           data={[
-            personJsonLd(socialProfileUrls(settings?.social)),
+            personJsonLd([
+              ...socialProfileUrls(settings?.social),
+              ...pressSameAsUrls(timeline),
+            ]),
             websiteJsonLd(),
           ]}
         />

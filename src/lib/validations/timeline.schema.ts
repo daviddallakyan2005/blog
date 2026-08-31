@@ -6,6 +6,7 @@ export const timelineKindSchema = z.enum([
   "talk",
   "award",
   "oss_contribution",
+  "press",
 ]);
 
 const timelineFields = {

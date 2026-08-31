@@ -755,7 +755,7 @@ function projects(): ProjectSpec[] {
 }
 
 type TimelineSpec = {
-  kind: "role" | "education" | "talk" | "award" | "oss_contribution";
+  kind: "role" | "education" | "talk" | "award" | "oss_contribution" | "press";
   title: string;
   org: string;
   orgUrl: string;
@@ -898,6 +898,22 @@ function timeline(): TimelineSpec[] {
         "Deletion-vector portability checklist",
       ],
       sortOrder: TIMELINE_SORT_MIN + 8,
+    },
+    {
+      kind: "press",
+      title: "A query engine on every laptop",
+      org: "Review Gazette",
+      orgUrl: "https://example.com/zzreview-press",
+      startDate: "2025-08-01",
+      endDate: "2025-08-01",
+      isCurrent: false,
+      description:
+        "A review-only profile of catalog work and Trino planning. Not a real article.",
+      highlights: [
+        "Quoted the flagship post",
+        "Linked the GitHub profile",
+      ],
+      sortOrder: TIMELINE_SORT_MIN + 9,
     },
   ];
 }

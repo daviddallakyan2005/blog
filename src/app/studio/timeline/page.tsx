@@ -12,6 +12,7 @@ const KIND_LABEL: Record<string, string> = {
   talk: "Talk",
   award: "Award",
   oss_contribution: "Open source",
+  press: "Elsewhere",
 };
 
 export default async function StudioTimelinePage() {
@@ -20,7 +21,9 @@ export default async function StudioTimelinePage() {
 
   const { data: entries } = await supabase
     .from("timeline_entries")
-    .select("id, kind, title, org, start_date, end_date, is_current, sort_order")
+    .select(
+      "id, kind, title, org, start_date, end_date, is_current, sort_order",
+    )
     .order("sort_order", { ascending: true })
     .order("start_date", { ascending: false });
 
@@ -32,7 +35,7 @@ export default async function StudioTimelinePage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Timeline</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Roles, education, talks, and other about-page entries.
+            Roles, education, talks, elsewhere, and other about-page entries.
           </p>
         </div>
         <Button asChild>
@@ -41,7 +44,9 @@ export default async function StudioTimelinePage() {
       </div>
 
       {list.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No timeline entries yet.</p>
+        <p className="text-sm text-muted-foreground">
+          No timeline entries yet.
+        </p>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full text-left text-sm">

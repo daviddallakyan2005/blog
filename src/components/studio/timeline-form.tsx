@@ -24,7 +24,8 @@ function asKind(value: string): TimelineKind {
     value === "education" ||
     value === "talk" ||
     value === "award" ||
-    value === "oss_contribution"
+    value === "oss_contribution" ||
+    value === "press"
   ) {
     return value;
   }
@@ -130,6 +131,7 @@ export function TimelineForm({
             <option value="talk">Talk</option>
             <option value="award">Award</option>
             <option value="oss_contribution">Open source</option>
+            <option value="press">Elsewhere</option>
           </select>
         </div>
       </div>

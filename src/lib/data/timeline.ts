@@ -12,6 +12,7 @@ const TIMELINE_KINDS = new Set<TimelineKind>([
   "talk",
   "award",
   "oss_contribution",
+  "press",
 ]);
 
 const TIMELINE_COLUMNS =
