@@ -62,8 +62,8 @@ export function TimelineForm({
     org,
     org_url: orgUrl,
     start_date: startDate,
-    end_date: endDate,
-    is_current: isCurrent,
+    end_date: kind === "press" ? "" : endDate,
+    is_current: kind === "press" ? false : isCurrent,
     description_md: descriptionMd,
     highlights: highlights
       .split("\n")
@@ -156,7 +156,9 @@ export function TimelineForm({
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="grid gap-2">
-          <Label htmlFor="timeline-start">Start date</Label>
+          <Label htmlFor="timeline-start">
+            {kind === "press" ? "Date" : "Start date"}
+          </Label>
           <Input
             id="timeline-start"
             type="date"
@@ -164,24 +166,28 @@ export function TimelineForm({
             onChange={(event) => setStartDate(event.target.value)}
           />
         </div>
-        <div className="grid gap-2">
-          <Label htmlFor="timeline-end">End date</Label>
-          <Input
-            id="timeline-end"
-            type="date"
-            value={endDate}
-            onChange={(event) => setEndDate(event.target.value)}
-            disabled={isCurrent}
-          />
-        </div>
-        <label className="flex items-end gap-2 pb-2 text-sm">
-          <input
-            type="checkbox"
-            checked={isCurrent}
-            onChange={(event) => setIsCurrent(event.target.checked)}
-          />
-          Current
-        </label>
+        {kind === "press" ? null : (
+          <>
+            <div className="grid gap-2">
+              <Label htmlFor="timeline-end">End date</Label>
+              <Input
+                id="timeline-end"
+                type="date"
+                value={endDate}
+                onChange={(event) => setEndDate(event.target.value)}
+                disabled={isCurrent}
+              />
+            </div>
+            <label className="flex items-end gap-2 pb-2 text-sm">
+              <input
+                type="checkbox"
+                checked={isCurrent}
+                onChange={(event) => setIsCurrent(event.target.checked)}
+              />
+              Current
+            </label>
+          </>
+        )}
       </div>
       <div className="grid gap-2">
         <Label htmlFor="timeline-description">Description (markdown)</Label>

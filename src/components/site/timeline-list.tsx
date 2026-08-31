@@ -1,6 +1,6 @@
 import { RenderedHtml } from "@/components/prose/rendered-html";
 import type { TimelineEntry, TimelineKind } from "@/lib/data/types";
-import { formatDateOnly } from "@/lib/format";
+import { formatTimelineRange } from "@/lib/format";
 
 const KIND_ORDER: TimelineKind[] = [
   "role",
@@ -20,17 +20,8 @@ const KIND_LABELS: Record<TimelineKind, string> = {
   press: "Elsewhere",
 };
 
-function dateRange(entry: TimelineEntry): string | null {
-  const start = formatDateOnly(entry.start_date);
-  const end = entry.is_current ? "Present" : formatDateOnly(entry.end_date);
-  if (start && end) {
-    return `${start} – ${end}`;
-  }
-  return start ?? end;
-}
-
 function TimelineItem({ entry }: { entry: TimelineEntry }) {
-  const range = dateRange(entry);
+  const range = formatTimelineRange(entry);
   const articleUrl = entry.kind === "press" ? entry.org_url : null;
   const orgUrl = entry.kind === "press" ? null : entry.org_url;
 

@@ -22,12 +22,25 @@ const timelineFields = {
   sort_order: z.number().int(),
 };
 
-export const createTimelineSchema = z.object(timelineFields);
+function asStoredTimeline<
+  T extends {
+    kind: z.infer<typeof timelineKindSchema>;
+    end_date?: string | null;
+    is_current: boolean;
+  },
+>(data: T): T {
+  if (data.kind === "press") {
+    return { ...data, end_date: null, is_current: false };
+  }
+  return data;
+}
+
+export const createTimelineSchema = z.object(timelineFields).transform(asStoredTimeline);
 
 export const updateTimelineSchema = z.object({
   id: z.uuid(),
   ...timelineFields,
-});
+}).transform(asStoredTimeline);
 
 export const timelineIdSchema = z.object({
   id: z.uuid(),

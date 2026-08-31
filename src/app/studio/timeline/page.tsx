@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { requireOwner } from "@/lib/auth";
-import { formatDateOnly } from "@/lib/format";
+import { formatTimelineRange } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -59,12 +59,7 @@ export default async function StudioTimelinePage() {
             </thead>
             <tbody className="divide-y divide-border">
               {list.map((entry) => {
-                const start = formatDateOnly(entry.start_date);
-                const end = entry.is_current
-                  ? "Present"
-                  : formatDateOnly(entry.end_date);
-                const range =
-                  start && end ? `${start} – ${end}` : (start ?? end ?? "—");
+                const range = formatTimelineRange(entry) ?? "—";
 
                 return (
                   <tr key={entry.id} className="hover:bg-muted/40">

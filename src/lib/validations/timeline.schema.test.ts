@@ -24,7 +24,7 @@ describe("timelineKindSchema", () => {
 
 describe("createTimelineSchema", () => {
   it("accepts kind press", () => {
-    expect(createTimelineSchema.parse(validPayload)).toEqual(validPayload);
+    expect(createTimelineSchema.parse(validPayload).kind).toBe("press");
   });
 
   it("rejects unknown kinds", () => {
@@ -32,5 +32,21 @@ describe("createTimelineSchema", () => {
       createTimelineSchema.safeParse({ ...validPayload, kind: "podcast" })
         .success,
     ).toBe(false);
+  });
+
+  it("stores press as a single date", () => {
+    expect(
+      createTimelineSchema.parse({
+        ...validPayload,
+        start_date: "2025-03-20",
+        end_date: "2025-06-01",
+        is_current: true,
+      }),
+    ).toEqual({
+      ...validPayload,
+      start_date: "2025-03-20",
+      end_date: null,
+      is_current: false,
+    });
   });
 });

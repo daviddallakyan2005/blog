@@ -31,6 +31,24 @@ export function formatDateOnly(value: string | null | undefined): string | null 
   return formatPostDate(value);
 }
 
+export function formatTimelineRange(entry: {
+  kind?: string;
+  start_date: string | null;
+  end_date: string | null;
+  is_current: boolean;
+}): string | null {
+  if (entry.kind === "press") {
+    return formatDateOnly(entry.start_date);
+  }
+
+  const start = formatDateOnly(entry.start_date);
+  const end = entry.is_current ? "Present" : formatDateOnly(entry.end_date);
+  if (start && end && start !== end) {
+    return `${start} – ${end}`;
+  }
+  return start ?? end;
+}
+
 export function formatReadingTime(minutes: number): string {
   const value = Math.max(1, minutes);
   return `${value} min read`;
