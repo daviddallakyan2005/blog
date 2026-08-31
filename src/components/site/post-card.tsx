@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { TagPill } from "@/components/site/tag-pill";
 import type { PublishedPostListItem } from "@/lib/data/types";
-import { formatPostDate, formatReadingTime } from "@/lib/format";
+import { formatCount, formatPostDate, formatReadingTime } from "@/lib/format";
 import { postPath } from "@/lib/seo/site";
 
 export function PostCard({ post }: { post: PublishedPostListItem }) {
@@ -25,6 +25,10 @@ export function PostCard({ post }: { post: PublishedPostListItem }) {
         ) : null}
         {date ? <span aria-hidden="true"> · </span> : null}
         <span>{formatReadingTime(post.reading_minutes)}</span>
+        <span aria-hidden="true"> · </span>
+        <span>{formatCount(post.view_count, "view")}</span>
+        <span aria-hidden="true"> · </span>
+        <span>{formatCount(post.like_count, "like")}</span>
       </p>
       {post.tags.length > 0 ? (
         <ul className="mt-3 flex flex-wrap gap-2">

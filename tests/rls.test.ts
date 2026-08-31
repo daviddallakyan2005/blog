@@ -445,4 +445,478 @@ describeRls("RLS", () => {
 
     expect(remaining?.title).toBe(originalTitle);
   });
+
+  it("anon cannot insert into post_likes", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("anon-like"),
+        title: "Anon like target",
+        status: "published",
+        published_at: new Date().toISOString(),
+        body_md: "published",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { error: likeError } = await anonClient().from("post_likes").insert({
+      post_id: data!.id,
+      profile_id: reader.userId,
+    });
+
+    expect(likeError).toBeTruthy();
+  });
+
+  it("anon cannot UPDATE posts.view_count or like_count on a published post", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("anon-counters"),
+        title: "Anon counter target",
+        status: "published",
+        published_at: new Date().toISOString(),
+        body_md: "published",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { data: updated, error: updateError } = await anonClient()
+      .from("posts")
+      .update({ view_count: 999, like_count: 999 })
+      .eq("id", data!.id)
+      .select("id");
+
+    expect(updateError || (updated ?? []).length === 0).toBeTruthy();
+
+    const { data: counters } = await admin
+      .from("posts")
+      .select("view_count, like_count")
+      .eq("id", data!.id)
+      .single();
+
+    expect(counters?.view_count).toBe(0);
+    expect(counters?.like_count).toBe(0);
+  });
+
+  it("reader can insert a like on a published post; like_count becomes 1", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("reader-like"),
+        title: "Reader like target",
+        status: "published",
+        published_at: new Date().toISOString(),
+        body_md: "published",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { error: likeError } = await reader.client.from("post_likes").insert({
+      post_id: data!.id,
+      profile_id: reader.userId,
+    });
+
+    expect(likeError).toBeNull();
+
+    const { data: counters } = await admin
+      .from("posts")
+      .select("like_count")
+      .eq("id", data!.id)
+      .single();
+
+    expect(counters?.like_count).toBe(1);
+
+    const { data: publicRow } = await anonClient()
+      .from("posts")
+      .select("like_count")
+      .eq("id", data!.id)
+      .single();
+
+    expect(publicRow?.like_count).toBe(1);
+  });
+
+  it("reader can delete own like; like_count returns to 0", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("reader-unlike"),
+        title: "Reader unlike target",
+        status: "published",
+        published_at: new Date().toISOString(),
+        body_md: "published",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { error: likeError } = await reader.client.from("post_likes").insert({
+      post_id: data!.id,
+      profile_id: reader.userId,
+    });
+    expect(likeError).toBeNull();
+
+    const { error: unlikeError } = await reader.client
+      .from("post_likes")
+      .delete()
+      .eq("post_id", data!.id)
+      .eq("profile_id", reader.userId);
+
+    expect(unlikeError).toBeNull();
+
+    const { data: counters } = await admin
+      .from("posts")
+      .select("like_count")
+      .eq("id", data!.id)
+      .single();
+
+    expect(counters?.like_count).toBe(0);
+  });
+
+  it("unique PK: second insert of same (post, profile) fails", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("like-pk"),
+        title: "Like PK target",
+        status: "published",
+        published_at: new Date().toISOString(),
+        body_md: "published",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { error: firstError } = await reader.client.from("post_likes").insert({
+      post_id: data!.id,
+      profile_id: reader.userId,
+    });
+    expect(firstError).toBeNull();
+
+    const { error: secondError } = await reader.client.from("post_likes").insert({
+      post_id: data!.id,
+      profile_id: reader.userId,
+    });
+    expect(secondError).toBeTruthy();
+  });
+
+  it("reader cannot like a draft", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("draft-like"),
+        title: "Draft like target",
+        status: "draft",
+        body_md: "draft",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { error: likeError } = await reader.client.from("post_likes").insert({
+      post_id: data!.id,
+      profile_id: reader.userId,
+    });
+
+    expect(likeError).toBeTruthy();
+  });
+
+  it("reader cannot delete another profile's like", async () => {
+    const admin = adminClient();
+    const other = await createReaderSession();
+    createdUserIds.push(other.userId);
+
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("other-like"),
+        title: "Other like target",
+        status: "published",
+        published_at: new Date().toISOString(),
+        body_md: "published",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { error: likeError } = await other.client.from("post_likes").insert({
+      post_id: data!.id,
+      profile_id: other.userId,
+    });
+    expect(likeError).toBeNull();
+
+    const { data: deleted } = await reader.client
+      .from("post_likes")
+      .delete()
+      .eq("post_id", data!.id)
+      .eq("profile_id", other.userId)
+      .select("post_id");
+
+    expect(deleted ?? []).toHaveLength(0);
+
+    const { data: remaining } = await admin
+      .from("post_likes")
+      .select("profile_id")
+      .eq("post_id", data!.id)
+      .eq("profile_id", other.userId)
+      .single();
+
+    expect(remaining?.profile_id).toBe(other.userId);
+  });
+
+  it("increment_post_view via anon increments view_count on a published post", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("view-pub"),
+        title: "View published target",
+        status: "published",
+        published_at: new Date().toISOString(),
+        body_md: "published",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { error: rpcError } = await anonClient().rpc("increment_post_view", {
+      post_id: data!.id,
+    });
+
+    expect(rpcError).toBeNull();
+
+    const { data: counters } = await admin
+      .from("posts")
+      .select("view_count")
+      .eq("id", data!.id)
+      .single();
+
+    expect(counters?.view_count).toBe(1);
+  });
+
+  it("increment_post_view on a draft does not increment", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("view-draft"),
+        title: "View draft target",
+        status: "draft",
+        body_md: "draft",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { error: rpcError } = await anonClient().rpc("increment_post_view", {
+      post_id: data!.id,
+    });
+
+    expect(rpcError).toBeNull();
+
+    const { data: counters } = await admin
+      .from("posts")
+      .select("view_count")
+      .eq("id", data!.id)
+      .single();
+
+    expect(counters?.view_count).toBe(0);
+  });
+
+  it("anon still cannot select a draft's view_count", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("draft-views"),
+        title: "Draft view leak target",
+        status: "draft",
+        body_md: "draft",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { data: rows } = await anonClient()
+      .from("posts")
+      .select("id, view_count")
+      .eq("id", data!.id);
+
+    expect(rows ?? []).toHaveLength(0);
+  });
+
+  it("increment_post_view on a published post does not bump updated_at", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("view-updated-at"),
+        title: "View updated_at target",
+        status: "published",
+        published_at: new Date().toISOString(),
+        body_md: "published",
+      })
+      .select("id, updated_at")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const before = data!.updated_at;
+
+    const { error: rpcError } = await anonClient().rpc("increment_post_view", {
+      post_id: data!.id,
+    });
+    expect(rpcError).toBeNull();
+
+    const { data: after } = await admin
+      .from("posts")
+      .select("updated_at")
+      .eq("id", data!.id)
+      .single();
+
+    expect(after?.updated_at).toBe(before);
+  });
+
+  it("reader like insert does not bump posts.updated_at", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("like-updated-at"),
+        title: "Like updated_at target",
+        status: "published",
+        published_at: new Date().toISOString(),
+        body_md: "published",
+      })
+      .select("id, updated_at")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const before = data!.updated_at;
+
+    const { error: likeError } = await reader.client.from("post_likes").insert({
+      post_id: data!.id,
+      profile_id: reader.userId,
+    });
+    expect(likeError).toBeNull();
+
+    const { data: after } = await admin
+      .from("posts")
+      .select("updated_at")
+      .eq("id", data!.id)
+      .single();
+
+    expect(after?.updated_at).toBe(before);
+  });
+
+  it("anon cannot select post_likes rows", async () => {
+    const admin = adminClient();
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("anon-like-select"),
+        title: "Anon like select target",
+        status: "published",
+        published_at: new Date().toISOString(),
+        body_md: "published",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { error: likeError } = await reader.client.from("post_likes").insert({
+      post_id: data!.id,
+      profile_id: reader.userId,
+    });
+    expect(likeError).toBeNull();
+
+    const { data: rows } = await anonClient()
+      .from("post_likes")
+      .select("post_id, profile_id")
+      .eq("post_id", data!.id);
+
+    expect(rows ?? []).toHaveLength(0);
+  });
+
+  it("reader cannot select another profile's like row", async () => {
+    const admin = adminClient();
+    const other = await createReaderSession();
+    createdUserIds.push(other.userId);
+
+    const { data, error } = await admin
+      .from("posts")
+      .insert({
+        slug: uniqueSlug("other-like-select"),
+        title: "Other like select target",
+        status: "published",
+        published_at: new Date().toISOString(),
+        body_md: "published",
+      })
+      .select("id")
+      .single();
+
+    expect(error).toBeNull();
+    expect(data?.id).toBeTruthy();
+    createdPostIds.push(data!.id);
+
+    const { error: likeError } = await other.client.from("post_likes").insert({
+      post_id: data!.id,
+      profile_id: other.userId,
+    });
+    expect(likeError).toBeNull();
+
+    const { data: rows } = await reader.client
+      .from("post_likes")
+      .select("post_id, profile_id")
+      .eq("post_id", data!.id)
+      .eq("profile_id", other.userId);
+
+    expect(rows ?? []).toHaveLength(0);
+  });
 });

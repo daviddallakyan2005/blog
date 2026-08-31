@@ -176,6 +176,39 @@ export type Database = {
         }
         Relationships: []
       }
+      post_likes: {
+        Row: {
+          created_at: string
+          post_id: string
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          post_id: string
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          post_id?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_likes_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post_revisions: {
         Row: {
           body_md: string
@@ -246,6 +279,7 @@ export type Database = {
           cover_path: string | null
           created_at: string
           id: string
+          like_count: number
           published_at: string | null
           reading_minutes: number
           search_vector: unknown
@@ -257,6 +291,7 @@ export type Database = {
           title: string
           toc_json: Json
           updated_at: string
+          view_count: number
           word_count: number
         }
         Insert: {
@@ -266,6 +301,7 @@ export type Database = {
           cover_path?: string | null
           created_at?: string
           id?: string
+          like_count?: number
           published_at?: string | null
           reading_minutes?: number
           search_vector?: unknown
@@ -277,6 +313,7 @@ export type Database = {
           title: string
           toc_json?: Json
           updated_at?: string
+          view_count?: number
           word_count?: number
         }
         Update: {
@@ -286,6 +323,7 @@ export type Database = {
           cover_path?: string | null
           created_at?: string
           id?: string
+          like_count?: number
           published_at?: string | null
           reading_minutes?: number
           search_vector?: unknown
@@ -297,6 +335,7 @@ export type Database = {
           title?: string
           toc_json?: Json
           updated_at?: string
+          view_count?: number
           word_count?: number
         }
         Relationships: []
@@ -523,6 +562,7 @@ export type Database = {
     }
     Functions: {
       current_profile_id: { Args: never; Returns: string }
+      increment_post_view: { Args: { post_id: string }; Returns: undefined }
       is_owner: { Args: never; Returns: boolean }
       search_posts: {
         Args: { limit_n?: number; q: string }

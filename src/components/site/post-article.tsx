@@ -2,11 +2,13 @@ import { Suspense } from "react";
 
 import { CommentSection } from "@/components/comments/comment-section";
 import { CoverImage } from "@/components/site/cover-image";
+import { PostLikeButton } from "@/components/site/post-like-button";
+import { RecordPostView } from "@/components/site/record-post-view";
 import { TagPill } from "@/components/site/tag-pill";
 import { RenderedHtml } from "@/components/prose/rendered-html";
 import { Toc } from "@/components/prose/toc";
 import type { PublishedPost } from "@/lib/data/types";
-import { formatPostDate, formatReadingTime } from "@/lib/format";
+import { formatCount, formatPostDate, formatReadingTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 export function PostArticle({
@@ -34,13 +36,18 @@ export function PostArticle({
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
             {post.title}
           </h1>
-          <p className="mt-4 text-sm text-muted-foreground">
+          <div className="mt-4 text-sm text-muted-foreground">
             {date ? (
               <time dateTime={post.published_at ?? undefined}>{date}</time>
             ) : null}
             {date ? <span aria-hidden="true"> · </span> : null}
             <span>{formatReadingTime(post.reading_minutes)}</span>
-          </p>
+            <span aria-hidden="true"> · </span>
+            <span>{formatCount(post.view_count, "view")}</span>
+            <span aria-hidden="true"> · </span>
+            <PostLikeButton postId={post.id} likeCount={post.like_count} />
+          </div>
+          <RecordPostView postId={post.id} />
           {post.tags.length > 0 ? (
             <ul className="mt-4 flex flex-wrap gap-2">
               {post.tags.map((tag) => (

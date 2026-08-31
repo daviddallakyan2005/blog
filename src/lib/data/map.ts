@@ -26,6 +26,8 @@ export type PostListRow = {
   cover_path: string | null;
   published_at: string | null;
   reading_minutes: number;
+  view_count: number;
+  like_count: number;
   post_tags: PostTagJoin[] | null;
 };
 
@@ -44,6 +46,8 @@ export const POST_LIST_COLUMNS = `
   cover_path,
   published_at,
   reading_minutes,
+  view_count,
+  like_count,
   post_tags (
     tags (
       id,
@@ -61,6 +65,8 @@ export const POST_DETAIL_COLUMNS = `
   cover_path,
   published_at,
   reading_minutes,
+  view_count,
+  like_count,
   body_html,
   toc_json,
   canonical_url,
@@ -136,6 +142,8 @@ export function mapListPost(row: PostListRow): PublishedPostListItem {
     cover_path: row.cover_path,
     published_at: row.published_at,
     reading_minutes: row.reading_minutes,
+    view_count: row.view_count ?? 0,
+    like_count: row.like_count ?? 0,
     tags: flattenTags(row.post_tags),
   };
 }

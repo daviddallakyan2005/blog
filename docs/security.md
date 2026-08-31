@@ -13,7 +13,7 @@ Default-deny RLS, cookie-session writes, no open redirects, sanitize all markdow
 ## Database
 
 - RLS on every public table. Anon cannot read drafts, revisions, or non-visible comments.
-- `SECURITY DEFINER` execute: keep `is_owner`, `search_posts`, `current_profile_id` as needed for RLS/RPC. Trigger functions (`handle_new_user`, `protect_profile_role`, `enforce_comment_rate_limit`) are revoked from `public` / `anon` / `authenticated`.
+- `SECURITY DEFINER` execute: keep `is_owner`, `search_posts`, `current_profile_id`, `increment_post_view` as needed for RLS/RPC. Trigger functions (`handle_new_user`, `protect_profile_role`, `enforce_comment_rate_limit`, `sync_post_like_count`) are revoked from `public` / `anon` / `authenticated`.
 - Explicit GRANTs. No client insert on `profiles`.
 - Service role is not imported by App Router code. It is allowed in `scripts/grant-owner.mjs` and `scripts/sync-github-prs.mjs` (GitHub Action / trusted machine) only — never in the App Router or Vercel.
 
@@ -39,3 +39,8 @@ Default-deny RLS, cookie-session writes, no open redirects, sanitize all markdow
 ## Comments
 
 Authenticated insert only as `pending` on **published** posts. Owner moderates. Trigger enforces 5 comments / author / hour and forces `created_at` to `now()`.
+
+## Likes / views
+
+Authenticated insert/delete on `post_likes` with `profile_id = auth.uid()`. Insert requires a published parent. Select is own row or owner — anon has no SELECT grant (liker graph is not public). No UPDATE policy or grant. Trigger `sync_post_like_count` maintains `posts.like_count` and is revoked from `public` / `anon` / `authenticated`. Anon and authenticated may `EXECUTE increment_post_view` (published rows only). Direct `UPDATE posts` (including `view_count` / `like_count`) stays owner-only. Counter-only updates do not bump `posts.updated_at`.
+

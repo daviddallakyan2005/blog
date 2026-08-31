@@ -35,3 +35,9 @@ export function formatReadingTime(minutes: number): string {
   const value = Math.max(1, minutes);
   return `${value} min read`;
 }
+
+export function formatCount(n: number, noun: "view" | "like"): string {
+  const count = Number.isFinite(n) ? Math.max(0, Math.floor(n)) : 0;
+  const label = count === 1 ? noun : `${noun}s`;
+  return `${count} ${label}`;
+}

@@ -19,6 +19,8 @@ export type PublishedPostListItem = {
   cover_path: string | null;
   published_at: string | null;
   reading_minutes: number;
+  view_count: number;
+  like_count: number;
   tags: Tag[];
 };
 

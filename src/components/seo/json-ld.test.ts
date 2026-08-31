@@ -14,6 +14,8 @@ function article(overrides: Partial<PublishedPost> = {}): PublishedPost {
     cover_path: null,
     published_at: "2026-01-15T00:00:00.000Z",
     reading_minutes: 4,
+    view_count: 0,
+    like_count: 0,
     tags: [],
     body_html: "<p>Hi</p>",
     toc_json: [],
