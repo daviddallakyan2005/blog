@@ -16,5 +16,8 @@ alwaysApply: false
 
 - Code samples in posts should be real enough to compile or run in the stated language. Prefer languages already in the Shiki allowlist in `render.ts`.
 - Cover images go through media actions + the `media` bucket. Provide alt text.
+- Architecture and production posts: colored diagrams as uploaded SVG/PNG images in `body_md`. Do not add Mermaid to `renderMarkdown` from a writing task. Authoring: `write-post` (`diagrams.md`).
+- Posts teach, then zoom: nouns and a layer map before Helm, hops, or chart pins. Authoring: `write-post` (`teach.md`).
+- No double dashes as punctuation in posts (`--`, `---`, `—`, `–` in title, summary, headings, captions, alt, or prose). Flags, SQL comments, GFM `| --- |`, and YAML `---` belong only inside fenced samples. Details: `write-post` (`craft.md`).
 
 Authoring workflow: `write-post` skill.
