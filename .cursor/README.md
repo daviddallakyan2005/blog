@@ -18,6 +18,8 @@ Always-on: `project`, `guidelines`, `subagents`. Path-scoped: `testing`, `ui`, `
 
 **Model-invoked:** `grill`, `tdd`, `diagnose`, `delivery-team`, `migrate`, `deploy`, `write-post`, `design`, `performance`, `seo`
 
+After typecheck/test/build: ask whether to commit and push to `main`. If yes, `deploy` watches Vercel logs, confirms Supabase migrations, smokes the live site, then stops local Next/Supabase. When the work is fully finished, stop local servers either way.
+
 ## Reviewers
 
 `blog-code-reviewer`, `blog-db-reviewer`, `blog-verifier`, `blog-performance-reviewer`, `blog-content-reviewer`, `blog-product-reviewer` — when to launch them is in `delivery-team`.

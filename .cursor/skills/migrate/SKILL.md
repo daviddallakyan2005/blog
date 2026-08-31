@@ -17,3 +17,4 @@ Invariants: `database` rule. Default to local. Remote `db push` / `link` require
 6. Update actions/data callers and Zod schemas if the contract changed.
 7. Verify per the database rule (`db reset`, integration tests when `.env.test` exists).
 8. Review: `blog-db-reviewer` on `cursor-grok-4.6-high`.
+9. After local verify is green: ask **Should I commit and push to main?** Production schema applies on push to `main`, not `db push`. If they say yes, follow `deploy` (watch Vercel, confirm the new migration on production, smoke the live site, then stop local Next/Supabase). If they say no, still teardown local.

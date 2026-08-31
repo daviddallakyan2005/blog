@@ -1,5 +1,5 @@
 ---
-description: Think first, surgical changes, no drive-by refactors
+description: Think first, surgical changes, no drive-by refactors, ask before commit and push
 alwaysApply: true
 ---
 
@@ -44,3 +44,9 @@ Define success criteria. Loop until verified.
 - Testable seam (markdown, slug, Zod, pure helpers) → red then green (`tdd`).
 - Studio/UI, RLS, or migrations → do not invent a unit file or use Playwright as red-green. RLS: integration tests after the SQL. Unexplained failures: `diagnose`.
 - Multi-step work: a brief plan with a verify check per step.
+
+## Ship
+
+After typecheck/test/build (as applicable) is green: ask **Should I commit and push to main?** Do not commit or push until they answer yes. If they say no, stop. If they say yes, follow `deploy`. Skip the question only when there is nothing to commit.
+
+When the work is fully finished (they said no, or post-push checks succeeded): stop this repo's local Next (`pnpm dev` / `next start`), `supabase stop`, and any other local servers/watchers this session started. Do not stop sibling stacks or Cursor. If Vercel or the live site failed, leave local running.

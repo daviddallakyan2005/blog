@@ -1,6 +1,6 @@
 ---
 name: delivery-team
-description: Wave/fan-out orchestration for this blog. Brief disjoint-path subagents on grok, gate with typecheck/test/build, fan-out reviewers. A FAIL goes back to the owning implementer — never a silent orchestrator patch. Use for features, fixes, migrations, and meaningful UI before claiming done.
+description: Wave/fan-out orchestration for this blog. Brief disjoint-path subagents on grok, gate with typecheck/test/build, fan-out reviewers. After green, ask whether to commit and push to main. When finished, stop local Next/Supabase. A FAIL goes back to the owning implementer — never a silent orchestrator patch. Use for features, fixes, migrations, and meaningful UI before claiming done.
 ---
 
 # Delivery team
@@ -64,3 +64,7 @@ Preferences and unrelated pre-existing issues are not findings.
 6. Cap at one re-pass per reviewer unless new material findings appear — then one more round for those reviewers only.
 
 Do not let reviewers commit, deploy, or mutate remote services.
+
+## Ship
+
+After the gate (and Wave 2 when it ran) is green: ask **Should I commit and push to main?** Wait. Do not commit or push until they answer yes. If they say no, stop local Next/Supabase (`deploy` teardown). If they say yes, follow `deploy` (watch Vercel logs, confirm Supabase migrations, smoke the live site, then teardown local). Skip the question only when there is nothing to commit.
