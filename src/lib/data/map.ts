@@ -34,6 +34,7 @@ export type PostDetailRow = PostListRow & {
   body_html: string;
   toc_json: Json;
   canonical_url: string | null;
+  word_count: number;
 };
 
 export const POST_LIST_COLUMNS = `
@@ -66,6 +67,7 @@ export const POST_DETAIL_COLUMNS = `
   body_html,
   toc_json,
   canonical_url,
+  word_count,
   post_tags (
     tags (
       id,
@@ -157,6 +159,7 @@ export function mapDetailPost(row: PostDetailRow): PublishedPost | null {
     body_html: row.body_html,
     toc_json: parseToc(row.toc_json),
     canonical_url: row.canonical_url,
+    word_count: row.word_count,
   };
 }
 

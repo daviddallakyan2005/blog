@@ -1,10 +1,15 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { JsonLd, blogPostingJsonLd } from "@/components/seo/json-ld";
+import {
+  JsonLd,
+  blogPostingJsonLd,
+  breadcrumbJsonLd,
+} from "@/components/seo/json-ld";
 import { PostArticle } from "@/components/site/post-article";
 import { getPublishedNotes, getPublishedPostBySlug } from "@/lib/data/posts";
-import { SITE_NAME, postPath } from "@/lib/seo/site";
+import { publicPageMetadata } from "@/lib/seo/metadata";
+import { postPath } from "@/lib/seo/site";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -25,27 +30,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Note" };
   }
 
-  const description = post.summary ?? undefined;
-  const url = postPath("note", post.slug);
-
-  return {
+  const description = post.summary ?? "";
+  const path = postPath("note", post.slug);
+  const meta = publicPageMetadata({
     title: post.title,
     description,
-    ...(post.canonical_url
-      ? { alternates: { canonical: post.canonical_url } }
-      : {}),
-    openGraph: {
-      type: "article",
-      url,
-      title: post.title,
-      description,
-      siteName: SITE_NAME,
-      publishedTime: post.published_at ?? undefined,
+    path,
+  });
+
+  return {
+    ...meta,
+    description: post.summary ?? undefined,
+    alternates: {
+      canonical: post.canonical_url ?? path,
     },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description,
+    openGraph: {
+      ...meta.openGraph,
+      type: "article",
+      description: post.summary ?? undefined,
+      publishedTime: post.published_at ?? undefined,
     },
   };
 }
@@ -60,7 +63,16 @@ export default async function NotePage({ params }: Props) {
 
   return (
     <>
-      <JsonLd data={blogPostingJsonLd(post)} />
+      <JsonLd
+        data={[
+          blogPostingJsonLd(post),
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Notes", path: "/notes" },
+            { name: post.title, path: postPath("note", post.slug) },
+          ]),
+        ]}
+      />
       <PostArticle post={post} showToc={post.toc_json.length >= 2} />
     </>
   );

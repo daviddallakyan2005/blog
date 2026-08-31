@@ -6,11 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { getGithubPrs } from "@/lib/data/github-prs";
 import type { GithubPr } from "@/lib/data/types";
 import { filterGithubPrs, uniqueRepos } from "@/lib/github/filter-prs";
+import { publicPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = publicPageMetadata({
   title: "Contributions",
   description: "Public pull requests on GitHub.",
-};
+  path: "/contributions",
+});
 
 function stateBadge(pr: GithubPr): {
   label: string;

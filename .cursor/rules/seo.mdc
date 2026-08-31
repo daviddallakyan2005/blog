@@ -1,6 +1,6 @@
 ---
 description: Metadata, robots, sitemap, RSS, JSON-LD, and OG image conventions
-globs: src/app/sitemap.ts,src/app/robots.ts,src/app/feed.xml/**,src/components/seo/**,src/app/**/opengraph-image.tsx
+globs: src/app/sitemap.ts,src/app/robots.ts,src/app/feed.xml/**,src/app/llms.txt/**,src/components/seo/**,src/app/**/opengraph-image.tsx,src/lib/seo/**
 alwaysApply: false
 ---
 
@@ -8,11 +8,12 @@ alwaysApply: false
 
 - Canonical site URL is `NEXT_PUBLIC_SITE_URL` via `src/lib/seo/site.ts`. No trailing slash.
 - `robots.ts` allows `/` and disallows `/studio`, `/login`, `/denied`, `/auth`. Point sitemap at `${SITE_URL}/sitemap.xml`.
-- `sitemap.ts` includes static public paths plus published articles, notes, tags, and projects. Never list drafts or studio routes.
-- RSS is `/feed.xml` (latest published articles + notes). Escape XML. Keep `alternates` on root metadata.
-- JSON-LD helpers live in `src/components/seo/json-ld.tsx` (`Person`, `WebSite`, `BlogPosting`). Escape `<` in JSON.
-- OG images: `src/components/seo/og-image.tsx` plus per-route `opengraph-image.tsx` under articles/notes. Stay 1200×630.
-- Studio routes set `robots: { index: false, follow: false }`.
+- `sitemap.ts` includes static public paths plus published articles, notes, tags, and projects. Never list drafts or studio routes. Do not add `/cv`.
+- RSS is `/feed.xml` (latest published articles + notes). Escape XML. Include `xmlns:atom`, `atom:link` self, and `<language>en</language>`. Keep `alternates` on root metadata.
+- JSON-LD helpers live in `src/components/seo/json-ld.tsx` (`Person`, `WebSite` + SearchAction, `BlogPosting`, `BreadcrumbList`). Escape `<` in JSON. SearchAction target is `${SITE_URL}/search?q={search_term_string}`.
+- OG images: `src/components/seo/og-image.tsx` plus default `src/app/opengraph-image.tsx` and per-route files under articles/notes/projects. Stay 1200×630.
+- `/llms.txt` lists the site name, description, and published article/note/project absolute URLs only. No drafts or studio.
+- Studio routes set `robots: { index: false, follow: false }`. Search with a `q` param is `noindex, follow`.
 - After new public routes or post kinds, update sitemap, robots (if needed), and JSON-LD in the same change.
 
 Audit workflow: `seo` skill.

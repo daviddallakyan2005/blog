@@ -5,16 +5,18 @@ import { TimelineList } from "@/components/site/timeline-list";
 import { RenderedHtml } from "@/components/prose/rendered-html";
 import { getSiteSettings } from "@/lib/data/settings";
 import { getTimelineEntries } from "@/lib/data/timeline";
+import { publicPageMetadata } from "@/lib/seo/metadata";
 import { SITE_NAME } from "@/lib/seo/site";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   const name = settings?.display_name?.trim() || SITE_NAME;
 
-  return {
+  return publicPageMetadata({
     title: "About",
     description: settings?.tagline?.trim() || `About ${name}.`,
-  };
+    path: "/about",
+  });
 }
 
 export default async function AboutPage() {

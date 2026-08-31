@@ -5,17 +5,33 @@ import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { searchPosts, type SearchResult } from "@/lib/data/search";
+import { publicPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: "Search",
-  description: "Search published articles and notes.",
+type SearchPageProps = {
+  searchParams: Promise<{ q?: string }>;
 };
 
-export default function SearchPage({
+export async function generateMetadata({
   searchParams,
-}: {
-  searchParams: Promise<{ q?: string }>;
-}) {
+}: SearchPageProps): Promise<Metadata> {
+  const { q } = await searchParams;
+  const meta = publicPageMetadata({
+    title: "Search",
+    description: "Search published articles and notes.",
+    path: "/search",
+  });
+
+  if (q?.trim()) {
+    return {
+      ...meta,
+      robots: { index: false, follow: true },
+    };
+  }
+
+  return meta;
+}
+
+export default function SearchPage({ searchParams }: SearchPageProps) {
   return (
     <div className="mx-auto max-w-prose px-6 py-16">
       <h1 className="text-3xl font-semibold tracking-tight">Search</h1>

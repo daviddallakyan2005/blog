@@ -4,11 +4,13 @@ import { Suspense } from "react";
 import { TagPillsSkeleton } from "@/components/site/skeletons";
 import { TagPill } from "@/components/site/tag-pill";
 import { getAllTags } from "@/lib/data/tags";
+import { publicPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = publicPageMetadata({
   title: "Tags",
   description: "Browse posts by topic.",
-};
+  path: "/tags",
+});
 
 export default function TagsPage() {
   return (

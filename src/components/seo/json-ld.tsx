@@ -21,13 +21,20 @@ export function JsonLd({ data }: { data: JsonLdValue }) {
   );
 }
 
-export function personJsonLd() {
+export function personJsonLd(extraSameAs: string[] = []) {
+  const sameAs = [...AUTHOR_SAME_AS];
+  for (const url of extraSameAs) {
+    if (/^https?:\/\//i.test(url) && !sameAs.includes(url)) {
+      sameAs.push(url);
+    }
+  }
+
   return {
     "@context": "https://schema.org",
     "@type": "Person",
     name: AUTHOR_NAME,
     url: SITE_URL,
-    sameAs: AUTHOR_SAME_AS,
+    sameAs,
   };
 }
 
@@ -40,6 +47,14 @@ export function websiteJsonLd() {
     publisher: {
       "@type": "Person",
       name: AUTHOR_NAME,
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/search?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
     },
   };
 }
@@ -55,6 +70,9 @@ export function blogPostingJsonLd(post: PublishedPost) {
     datePublished: post.published_at ?? undefined,
     url,
     mainEntityOfPage: url,
+    image: `${url}/opengraph-image`,
+    ...(post.word_count > 0 ? { wordCount: post.word_count } : {}),
+    timeRequired: `PT${post.reading_minutes}M`,
     author: {
       "@type": "Person",
       name: AUTHOR_NAME,
@@ -63,5 +81,18 @@ export function blogPostingJsonLd(post: PublishedPost) {
       "@type": "Person",
       name: AUTHOR_NAME,
     },
+  };
+}
+
+export function breadcrumbJsonLd(items: { name: string; path: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: absoluteUrl(item.path),
+    })),
   };
 }

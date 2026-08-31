@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { getPublishedArticles, getPublishedNotes } from "@/lib/data/posts";
 import { getSiteSettings } from "@/lib/data/settings";
 import type { PublishedPostListItem } from "@/lib/data/types";
+import { publicPageMetadata } from "@/lib/seo/metadata";
 import { SITE_NAME } from "@/lib/seo/site";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,15 +21,9 @@ export async function generateMetadata(): Promise<Metadata> {
     "A personal technical blog.";
 
   return {
+    ...publicPageMetadata({ title, description, path: "/" }),
     title: {
       absolute: title,
-    },
-    description,
-    openGraph: {
-      title,
-      description,
-      url: "/",
-      siteName: SITE_NAME,
     },
   };
 }

@@ -7,6 +7,7 @@ import {
   getPublishedPostsByTag,
   getTagBySlug,
 } from "@/lib/data/tags";
+import { publicPageMetadata } from "@/lib/seo/metadata";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -27,10 +28,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Tag" };
   }
 
-  return {
+  return publicPageMetadata({
     title: tag.name,
     description: tag.description ?? `Posts tagged ${tag.name}.`,
-  };
+    path: `/tags/${tag.slug}`,
+  });
 }
 
 export default async function TagPage({ params }: Props) {

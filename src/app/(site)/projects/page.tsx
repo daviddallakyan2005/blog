@@ -4,11 +4,13 @@ import { Suspense } from "react";
 import { ProjectCard } from "@/components/site/project-card";
 import { ProjectCardsSkeleton } from "@/components/site/skeletons";
 import { getAllProjects } from "@/lib/data/projects";
+import { publicPageMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = publicPageMetadata({
   title: "Projects",
   description: "Selected work and open-source projects.",
-};
+  path: "/projects",
+});
 
 export default function ProjectsPage() {
   return (

@@ -4,6 +4,8 @@ import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "sonner";
 
 import { JsonLd, personJsonLd, websiteJsonLd } from "@/components/seo/json-ld";
+import { getSiteSettings } from "@/lib/data/settings";
+import type { SiteSocial } from "@/lib/data/types";
 import {
   AUTHOR_NAME,
   SITE_DESCRIPTION,
@@ -48,11 +50,24 @@ export const metadata: Metadata = {
 
 const THEME_INIT = `(function(){try{var t=localStorage.getItem("theme");if(t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.classList.add("dark")}catch(e){}})();`;
 
-export default function RootLayout({
+function socialProfileUrls(social: SiteSocial | undefined): string[] {
+  if (!social) {
+    return [];
+  }
+
+  return [social.twitter, social.linkedin].filter(
+    (value): value is string =>
+      typeof value === "string" && /^https?:\/\//i.test(value),
+  );
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+
   return (
     <html
       lang="en"
@@ -61,7 +76,12 @@ export default function RootLayout({
     >
       <body className="min-h-dvh bg-background font-sans text-foreground antialiased">
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
-        <JsonLd data={[personJsonLd(), websiteJsonLd()]} />
+        <JsonLd
+          data={[
+            personJsonLd(socialProfileUrls(settings?.social)),
+            websiteJsonLd(),
+          ]}
+        />
         {children}
         <Toaster />
         <Analytics />

@@ -3,9 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { RenderedHtml } from "@/components/prose/rendered-html";
+import { JsonLd, breadcrumbJsonLd } from "@/components/seo/json-ld";
 import { Badge } from "@/components/ui/badge";
 import { getAllProjects, getProjectBySlug } from "@/lib/data/projects";
-import { SITE_NAME } from "@/lib/seo/site";
+import { publicPageMetadata } from "@/lib/seo/metadata";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -26,23 +27,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "Project" };
   }
 
-  const description = project.tagline ?? undefined;
-
-  return {
+  return publicPageMetadata({
     title: project.name,
-    description,
-    openGraph: {
-      type: "website",
-      title: project.name,
-      description,
-      siteName: SITE_NAME,
-    },
-    twitter: {
-      card: "summary",
-      title: project.name,
-      description,
-    },
-  };
+    description: project.tagline ?? "",
+    path: `/projects/${project.slug}`,
+  });
 }
 
 export default async function ProjectPage({ params }: Props) {
@@ -54,59 +43,72 @@ export default async function ProjectPage({ params }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-prose px-6 py-16">
-      <p className="text-sm text-muted-foreground">
-        <Link href="/projects" className="hover:text-foreground">
-          Projects
-        </Link>
-      </p>
-      <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-        {project.name}
-      </h1>
-      {project.tagline ? (
-        <p className="mt-3 text-lg text-muted-foreground">{project.tagline}</p>
-      ) : null}
-
-      <div className="mt-4 flex flex-wrap items-center gap-2">
-        {project.primary_language ? (
-          <Badge variant="secondary">{project.primary_language}</Badge>
+    <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Home", path: "/" },
+          { name: "Projects", path: "/projects" },
+          { name: project.name, path: `/projects/${project.slug}` },
+        ])}
+      />
+      <div className="mx-auto max-w-prose px-6 py-16">
+        <p className="text-sm text-muted-foreground">
+          <Link href="/projects" className="hover:text-foreground">
+            Projects
+          </Link>
+        </p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight">
+          {project.name}
+        </h1>
+        {project.tagline ? (
+          <p className="mt-3 text-lg text-muted-foreground">
+            {project.tagline}
+          </p>
         ) : null}
-        {project.role ? <Badge variant="outline">{project.role}</Badge> : null}
-        {project.tech.map((item) => (
-          <Badge key={item} variant="outline">
-            {item}
-          </Badge>
-        ))}
-      </div>
 
-      <div className="mt-6 flex flex-wrap gap-4 text-sm">
-        {project.repo_url ? (
-          <a
-            href={project.repo_url}
-            target="_blank"
-            rel="noreferrer"
-            className="text-accent underline-offset-4 hover:underline"
-          >
-            Repository
-          </a>
-        ) : null}
-        {project.homepage_url ? (
-          <a
-            href={project.homepage_url}
-            target="_blank"
-            rel="noreferrer"
-            className="text-accent underline-offset-4 hover:underline"
-          >
-            Homepage
-          </a>
-        ) : null}
-      </div>
-
-      {project.description_html.trim() ? (
-        <div className="mt-10">
-          <RenderedHtml html={project.description_html} />
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {project.primary_language ? (
+            <Badge variant="secondary">{project.primary_language}</Badge>
+          ) : null}
+          {project.role ? (
+            <Badge variant="outline">{project.role}</Badge>
+          ) : null}
+          {project.tech.map((item) => (
+            <Badge key={item} variant="outline">
+              {item}
+            </Badge>
+          ))}
         </div>
-      ) : null}
-    </div>
+
+        <div className="mt-6 flex flex-wrap gap-4 text-sm">
+          {project.repo_url ? (
+            <a
+              href={project.repo_url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-accent underline-offset-4 hover:underline"
+            >
+              Repository
+            </a>
+          ) : null}
+          {project.homepage_url ? (
+            <a
+              href={project.homepage_url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-accent underline-offset-4 hover:underline"
+            >
+              Homepage
+            </a>
+          ) : null}
+        </div>
+
+        {project.description_html.trim() ? (
+          <div className="mt-10">
+            <RenderedHtml html={project.description_html} />
+          </div>
+        ) : null}
+      </div>
+    </>
   );
 }

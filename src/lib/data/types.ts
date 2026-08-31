@@ -27,6 +27,7 @@ export type PublishedPost = PublishedPostListItem & {
   body_html: string;
   toc_json: TocItem[];
   canonical_url: string | null;
+  word_count: number;
 };
 
 export type SiteSocial = {
@@ -70,11 +71,7 @@ export type Project = {
 export type ProjectListItem = Omit<Project, "description_html">;
 
 export type TimelineKind =
-  | "role"
-  | "education"
-  | "talk"
-  | "award"
-  | "oss_contribution";
+  "role" | "education" | "talk" | "award" | "oss_contribution";
 
 export type TimelineEntry = {
   id: string;

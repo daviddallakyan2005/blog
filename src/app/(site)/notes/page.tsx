@@ -4,13 +4,15 @@ import { Suspense } from "react";
 import { Pagination } from "@/components/site/pagination";
 import { PostList, PostListSkeleton } from "@/components/site/post-list";
 import { countPublishedPosts, getPublishedNotes } from "@/lib/data/posts";
+import { publicPageMetadata } from "@/lib/seo/metadata";
 
 const PER_PAGE = 10;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = publicPageMetadata({
   title: "Notes",
   description: "Shorter notes and asides.",
-};
+  path: "/notes",
+});
 
 export default function NotesPage({
   searchParams,
