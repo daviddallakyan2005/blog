@@ -18,7 +18,7 @@ export type {
   Tag,
   TocItem,
 } from "./types";
-export { getAllTags, getPublishedPostsByTag } from "./tags";
+export { getAllTags } from "./tags";
 
 export async function getPublishedArticles(
   limit = 20,
@@ -48,32 +48,6 @@ export async function getPublishedArticles(
     return compactPosts(data as PostListRow[] | null);
   } catch {
     return [];
-  }
-}
-
-export async function countPublishedPosts(): Promise<number> {
-  "use cache";
-  cacheTag("posts");
-  cacheLife("hours");
-
-  const supabase = createClient();
-  if (!supabase) {
-    return 0;
-  }
-
-  try {
-    const { count, error } = await supabase
-      .from("posts")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "published");
-
-    if (error) {
-      return 0;
-    }
-
-    return count ?? 0;
-  } catch {
-    return 0;
   }
 }
 

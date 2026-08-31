@@ -13,7 +13,7 @@ export function TagPill({
 }) {
   return (
     <Link
-      href={`/tags/${slug}`}
+      href={`/articles?tag=${slug}`}
       className={cn(
         "inline-flex items-center rounded-md border border-border bg-muted px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:border-accent/40 hover:text-foreground",
         className,

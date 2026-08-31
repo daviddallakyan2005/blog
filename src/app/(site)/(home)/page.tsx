@@ -5,9 +5,12 @@ import { type ReactNode, Suspense } from "react";
 import { RenderedHtml } from "@/components/prose/rendered-html";
 import { PostCard } from "@/components/site/post-card";
 import { PostListSkeleton } from "@/components/site/post-list";
+import { SocialLinks } from "@/components/site/social-links";
+import { TimelineList } from "@/components/site/timeline-list";
 import { Button } from "@/components/ui/button";
 import { getPublishedArticles } from "@/lib/data/posts";
 import { getSiteSettings } from "@/lib/data/settings";
+import { getTimelineEntries } from "@/lib/data/timeline";
 import type { PublishedPostListItem } from "@/lib/data/types";
 import { publicPageMetadata } from "@/lib/seo/metadata";
 import { SITE_NAME } from "@/lib/seo/site";
@@ -29,7 +32,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const settings = await getSiteSettings();
+  const [settings, entries] = await Promise.all([
+    getSiteSettings(),
+    getTimelineEntries(),
+  ]);
 
   const name = settings?.display_name?.trim() || SITE_NAME;
   const tagline = settings?.tagline?.trim();
@@ -51,7 +57,10 @@ export default async function HomePage() {
             dangerouslySetInnerHTML={{ __html: bioHtml }}
           />
         ) : null}
+        {settings ? <SocialLinks social={settings.social} /> : null}
       </section>
+
+      <TimelineList entries={entries} />
 
       <section id="cv" className="mt-16 scroll-mt-20">
         <h2 className="text-xl font-semibold tracking-tight">CV</h2>

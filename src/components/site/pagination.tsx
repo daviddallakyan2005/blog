@@ -1,20 +1,20 @@
 import Link from "next/link";
 
+import { articlesHref } from "@/lib/articles/filter-articles";
+
 export function Pagination({
   page,
   totalPages,
-  basePath,
+  q,
+  tag,
 }: {
   page: number;
   totalPages: number;
-  basePath: string;
+  q?: string | null;
+  tag?: string | null;
 }) {
   if (totalPages <= 1) {
     return null;
-  }
-
-  function href(target: number) {
-    return target <= 1 ? basePath : `${basePath}?page=${target}`;
   }
 
   return (
@@ -24,7 +24,7 @@ export function Pagination({
     >
       {page > 1 ? (
         <Link
-          href={href(page - 1)}
+          href={articlesHref({ q, tag, page: page - 1 })}
           className="text-accent underline-offset-4 hover:underline"
         >
           Previous
@@ -37,7 +37,7 @@ export function Pagination({
       </span>
       {page < totalPages ? (
         <Link
-          href={href(page + 1)}
+          href={articlesHref({ q, tag, page: page + 1 })}
           className="text-accent underline-offset-4 hover:underline"
         >
           Next

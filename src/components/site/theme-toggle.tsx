@@ -50,7 +50,7 @@ export function ThemeToggle() {
         theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
       }
     >
-      {theme === "dark" ? <Sun /> : <Moon />}
+      {theme === "dark" ? <Moon /> : <Sun />}
     </Button>
   );
 }
