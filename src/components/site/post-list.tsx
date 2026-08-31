@@ -35,3 +35,16 @@ export function PostListSkeleton() {
     </div>
   );
 }
+
+export function CompactPostListSkeleton() {
+  return (
+    <div className="mt-6 space-y-4" aria-hidden="true">
+      {Array.from({ length: 3 }, (_, index) => (
+        <div key={index} className="space-y-2">
+          <Skeleton className="h-5 w-2/3" />
+          <Skeleton className="h-4 w-40" />
+        </div>
+      ))}
+    </div>
+  );
+}

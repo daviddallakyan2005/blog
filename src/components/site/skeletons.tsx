@@ -85,27 +85,22 @@ export function HomeSkeleton() {
       <div aria-hidden="true">
         <Skeleton className="h-10 w-56" />
         <Skeleton className="mt-3 h-6 w-72" />
-        <div className="mt-6 space-y-3">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-2/3" />
+        <div className="mt-6 flex gap-4">
+          <Skeleton className="h-4 w-14" />
+          <Skeleton className="h-4 w-16" />
+          <Skeleton className="h-4 w-24" />
         </div>
-        <div className="mt-16">
-          <Skeleton className="h-6 w-16" />
-          <div className="mt-6 space-y-3">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-3/4" />
-          </div>
-          <Skeleton className="mt-10 h-9 w-36" />
-        </div>
-        <div className="mt-16">
-          <Skeleton className="h-6 w-28" />
-          <PostListSkeleton />
-        </div>
+        <Skeleton className="mt-8 h-5 w-10" />
         <div className="mt-16">
           <Skeleton className="h-6 w-24" />
-          <PostListSkeleton />
+          <div className="mt-6 space-y-4">
+            {Array.from({ length: 3 }, (_, index) => (
+              <div key={index} className="space-y-2">
+                <Skeleton className="h-5 w-2/3" />
+                <Skeleton className="h-4 w-40" />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>

@@ -3,11 +3,11 @@ import Link from "next/link";
 import { type ReactNode, Suspense } from "react";
 
 import { RenderedHtml } from "@/components/prose/rendered-html";
+import { CvDisclosure } from "@/components/site/cv-disclosure";
 import { PostCard } from "@/components/site/post-card";
-import { PostListSkeleton } from "@/components/site/post-list";
+import { CompactPostListSkeleton } from "@/components/site/post-list";
 import { SocialLinks } from "@/components/site/social-links";
 import { TimelineList } from "@/components/site/timeline-list";
-import { Button } from "@/components/ui/button";
 import { getPublishedArticles } from "@/lib/data/posts";
 import { getSiteSettings } from "@/lib/data/settings";
 import { getTimelineEntries } from "@/lib/data/timeline";
@@ -41,6 +41,7 @@ export default async function HomePage() {
   const tagline = settings?.tagline?.trim();
   const bioHtml = settings?.bio_html?.trim();
   const cvHtml = settings?.cv_html?.trim() ?? "";
+  const showCv = entries.length > 0 || Boolean(cvHtml);
 
   return (
     <div className="mx-auto max-w-prose px-6 py-16">
@@ -57,33 +58,39 @@ export default async function HomePage() {
             dangerouslySetInnerHTML={{ __html: bioHtml }}
           />
         ) : null}
-        {settings ? <SocialLinks social={settings.social} /> : null}
+        {settings ? (
+          <SocialLinks
+            social={settings.social}
+            trailing={
+              cvHtml ? (
+                <li>
+                  <a
+                    href="/cv.pdf"
+                    download
+                    className="text-accent underline-offset-4 hover:underline"
+                  >
+                    Download PDF
+                  </a>
+                </li>
+              ) : null
+            }
+          />
+        ) : null}
       </section>
 
-      <TimelineList entries={entries} />
-
-      <section id="cv" className="mt-16 scroll-mt-20">
-        <h2 className="text-xl font-semibold tracking-tight">CV</h2>
-        {cvHtml ? (
-          <>
-            <div className="mt-6">
+      {showCv ? (
+        <CvDisclosure>
+          <TimelineList compact entries={entries} />
+          {cvHtml ? (
+            <div className={entries.length > 0 ? "cv-doc mt-10" : "cv-doc"}>
               <RenderedHtml html={cvHtml} />
             </div>
-            <div className="mt-10">
-              <Button asChild>
-                <a href="/cv.pdf" download>
-                  Download PDF
-                </a>
-              </Button>
-            </div>
-          </>
-        ) : (
-          <p className="mt-10 text-muted-foreground">No CV published yet.</p>
-        )}
-      </section>
+          ) : null}
+        </CvDisclosure>
+      ) : null}
 
       <HomeSection title="Articles" href="/articles">
-        <Suspense fallback={<PostListSkeleton />}>
+        <Suspense fallback={<CompactPostListSkeleton />}>
           <HomeArticles />
         </Suspense>
       </HomeSection>
@@ -117,7 +124,7 @@ function HomeSection({
 }
 
 async function HomeArticles() {
-  const posts = await getPublishedArticles(5);
+  const posts = await getPublishedArticles(3);
   return <HomeSectionPosts posts={posts} empty="No articles yet." />;
 }
 
@@ -135,7 +142,7 @@ function HomeSectionPosts({
   return (
     <div className="mt-6">
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} />
+        <PostCard key={post.id} post={post} compact />
       ))}
     </div>
   );

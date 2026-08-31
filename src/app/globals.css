@@ -105,6 +105,28 @@ body {
   }
 }
 
+@keyframes slide-down-nav {
+  from {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up-nav {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-0.75rem);
+  }
+}
+
 .prose-blog {
   max-width: 68ch;
   font-size: 1.0625rem;
@@ -248,8 +270,30 @@ html.dark .prose-blog [data-theme~="github-dark"] span {
   text-decoration: var(--shiki-dark-text-decoration, inherit);
 }
 
+.cv-doc .prose-blog h1 {
+  font-size: 1.4rem;
+}
+
+.cv-doc .prose-blog h2 {
+  margin-top: 1.6em;
+  font-size: 1.15rem;
+}
+
+.cv-doc .prose-blog h3 {
+  margin-top: 1.25em;
+  font-size: 1.05rem;
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-slot="skeleton"] {
+    animation: none;
+  }
+
+  [data-slot="mobile-nav-panel"] {
+    animation: none;
+  }
+
+  [data-slot="mobile-nav-overlay"] {
     animation: none;
   }
 }

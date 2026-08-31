@@ -5,9 +5,34 @@ import type { PublishedPostListItem } from "@/lib/data/types";
 import { formatCount, formatPostDate, formatReadingTime } from "@/lib/format";
 import { postPath } from "@/lib/seo/site";
 
-export function PostCard({ post }: { post: PublishedPostListItem }) {
+export function PostCard({
+  post,
+  compact = false,
+}: {
+  post: PublishedPostListItem;
+  compact?: boolean;
+}) {
   const href = postPath(post.slug);
   const date = formatPostDate(post.published_at);
+
+  if (compact) {
+    return (
+      <article className="border-b border-border/80 py-4 first:pt-0 last:border-b-0">
+        <h3 className="font-semibold tracking-tight">
+          <Link href={href} className="hover:text-accent">
+            {post.title}
+          </Link>
+        </h3>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {date ? (
+            <time dateTime={post.published_at ?? undefined}>{date}</time>
+          ) : null}
+          {date ? <span aria-hidden="true"> · </span> : null}
+          <span>{formatReadingTime(post.reading_minutes)}</span>
+        </p>
+      </article>
+    );
+  }
 
   return (
     <article className="border-b border-border/80 py-8 first:pt-0 last:border-b-0">

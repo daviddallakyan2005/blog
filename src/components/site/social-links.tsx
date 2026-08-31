@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import type { SiteSocial } from "@/lib/data/types";
 
 const LABELS: Record<keyof SiteSocial, string> = {
@@ -33,7 +35,13 @@ function socialHref(kind: keyof SiteSocial, value: string): string {
   return `https://www.linkedin.com/in/${handle}`;
 }
 
-export function SocialLinks({ social }: { social: SiteSocial }) {
+export function SocialLinks({
+  social,
+  trailing,
+}: {
+  social: SiteSocial;
+  trailing?: ReactNode;
+}) {
   const links = ORDER.flatMap((kind) => {
     const value = social[kind]?.trim();
     if (!value) {
@@ -42,7 +50,7 @@ export function SocialLinks({ social }: { social: SiteSocial }) {
     return [{ kind, href: socialHref(kind, value), label: LABELS[kind] }];
   });
 
-  if (links.length === 0) {
+  if (links.length === 0 && !trailing) {
     return null;
   }
 
@@ -60,6 +68,7 @@ export function SocialLinks({ social }: { social: SiteSocial }) {
           </a>
         </li>
       ))}
+      {trailing}
     </ul>
   );
 }
