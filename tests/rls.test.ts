@@ -310,6 +310,9 @@ describeRls("RLS", () => {
 
   it("anon cannot see visible comments on an unpublished post", async () => {
     const admin = adminClient();
+    const author = await createReaderSession();
+    createdUserIds.push(author.userId);
+
     const { data, error } = await admin
       .from("posts")
       .insert({
@@ -327,7 +330,7 @@ describeRls("RLS", () => {
 
     const { error: commentError } = await admin.from("comments").insert({
       post_id: data!.id,
-      author_id: reader.userId,
+      author_id: author.userId,
       body: "visible on a draft should stay hidden from anon",
       status: "visible",
     });

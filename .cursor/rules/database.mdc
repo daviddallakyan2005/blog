@@ -16,7 +16,7 @@ alwaysApply: false
 - RLS is **default-deny**. Enable RLS before or with the table. Add explicit policies; never rely on table grants alone.
 - Public reads: published posts, visible comments, public catalogs (tags, projects, timeline, site_settings, media metadata). Drafts, revisions, and pending comments stay owner-only (authors may see their own pending comments).
 - `SECURITY DEFINER` functions must set `search_path` (empty or an explicit list). Validate auth inside the function. Use `(select public.is_owner())` / `(select auth.uid())` so Postgres can initplan.
-- GRANTs are explicit. Anon is select-only on public catalogs. No client `INSERT` on `profiles` (trigger-only). Revoke leftover `PUBLIC` execute on definer functions, then grant the minimum roles.
+- GRANTs are explicit. Anon is select-only on public catalogs. No client `INSERT` on `profiles` (trigger-only). `service_role` needs table `ALL` (`auto_expose_new_tables` is unset; RLS bypass is not a GRANT). Revoke leftover `PUBLIC` execute on definer functions, then grant the minimum roles.
 - Service-role clients bypass RLS. App code must not use `src/lib/supabase/admin.ts`. Owner bootstrap is `scripts/grant-owner.mjs` only.
 - Never log or expose `SUPABASE_SERVICE_ROLE_KEY`.
 

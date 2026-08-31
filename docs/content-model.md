@@ -40,6 +40,6 @@ RLS is enabled and default-deny. Policies use `(select public.is_owner())` / `(s
 | `post_likes` update | none | none |
 | `storage.objects` (`media`) | select | write |
 
-GRANTs: anon/authenticated `SELECT` on public catalogs; authenticated `INSERT/UPDATE/DELETE` where policies allow. `post_revisions` select is authenticated-only. No profile insert grant.
+GRANTs: anon/authenticated `SELECT` on public catalogs; authenticated `INSERT/UPDATE/DELETE` where policies allow. `post_revisions` select is authenticated-only. No profile insert grant. `service_role` gets `ALL` on public tables (`auto_expose_new_tables` is unset).
 
 Owner role is **not** assigned by `handle_new_user`. Use `scripts/grant-owner.mjs`.

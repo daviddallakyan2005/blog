@@ -14,7 +14,7 @@ Default-deny RLS, cookie-session writes, no open redirects, sanitize all markdow
 
 - RLS on every public table. Anon cannot read drafts, revisions, or non-visible comments.
 - `SECURITY DEFINER` execute: keep `is_owner`, `search_posts`, `current_profile_id`, `increment_post_view` as needed for RLS/RPC. Trigger functions (`handle_new_user`, `protect_profile_role`, `enforce_comment_rate_limit`, `sync_post_like_count`) are revoked from `public` / `anon` / `authenticated`.
-- Explicit GRANTs. No client insert on `profiles`.
+- Explicit GRANTs. No client insert on `profiles`. `service_role` needs table `ALL` (RLS bypass does not imply Data API grants; `auto_expose_new_tables` is unset).
 - Service role is not imported by App Router code. It is allowed in `scripts/grant-owner.mjs` and `scripts/sync-github-prs.mjs` (GitHub Action / trusted machine) only — never in the App Router or Vercel.
 
 ## Storage
