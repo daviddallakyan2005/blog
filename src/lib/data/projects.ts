@@ -2,19 +2,21 @@ import { cacheLife, cacheTag } from "next/cache";
 
 import { createClient } from "@/lib/supabase/anon";
 
-import type { Project } from "./types";
+import type { Project, ProjectListItem } from "./types";
 
-export type { Project } from "./types";
+export type { Project, ProjectListItem } from "./types";
 
-const PROJECT_COLUMNS =
+const PROJECT_LIST_COLUMNS =
+  "id, slug, name, tagline, repo_url, homepage_url, primary_language, tech, role, status, featured, sort_order, stars, forks";
+
+const PROJECT_DETAIL_COLUMNS =
   "id, slug, name, tagline, description_html, repo_url, homepage_url, primary_language, tech, role, status, featured, sort_order, stars, forks";
 
-function mapProject(row: {
+type ProjectListRow = {
   id: string;
   slug: string;
   name: string;
   tagline: string | null;
-  description_html: string;
   repo_url: string | null;
   homepage_url: string | null;
   primary_language: string | null;
@@ -25,13 +27,14 @@ function mapProject(row: {
   sort_order: number;
   stars: number | null;
   forks: number | null;
-}): Project {
+};
+
+function mapListProject(row: ProjectListRow): ProjectListItem {
   return {
     id: row.id,
     slug: row.slug,
     name: row.name,
     tagline: row.tagline,
-    description_html: row.description_html,
     repo_url: row.repo_url,
     homepage_url: row.homepage_url,
     primary_language: row.primary_language,
@@ -45,7 +48,16 @@ function mapProject(row: {
   };
 }
 
-export async function getFeaturedProjects(): Promise<Project[]> {
+function mapProject(
+  row: ProjectListRow & { description_html: string },
+): Project {
+  return {
+    ...mapListProject(row),
+    description_html: row.description_html,
+  };
+}
+
+export async function getFeaturedProjects(): Promise<ProjectListItem[]> {
   "use cache";
   cacheTag("projects");
   cacheLife("hours");
@@ -58,7 +70,7 @@ export async function getFeaturedProjects(): Promise<Project[]> {
   try {
     const { data, error } = await supabase
       .from("projects")
-      .select(PROJECT_COLUMNS)
+      .select(PROJECT_LIST_COLUMNS)
       .eq("featured", true)
       .order("sort_order", { ascending: true })
       .order("name", { ascending: true });
@@ -67,13 +79,13 @@ export async function getFeaturedProjects(): Promise<Project[]> {
       return [];
     }
 
-    return data.map(mapProject);
+    return data.map(mapListProject);
   } catch {
     return [];
   }
 }
 
-export async function getAllProjects(): Promise<Project[]> {
+export async function getAllProjects(): Promise<ProjectListItem[]> {
   "use cache";
   cacheTag("projects");
   cacheLife("hours");
@@ -86,7 +98,7 @@ export async function getAllProjects(): Promise<Project[]> {
   try {
     const { data, error } = await supabase
       .from("projects")
-      .select(PROJECT_COLUMNS)
+      .select(PROJECT_LIST_COLUMNS)
       .order("featured", { ascending: false })
       .order("sort_order", { ascending: true })
       .order("name", { ascending: true });
@@ -95,7 +107,7 @@ export async function getAllProjects(): Promise<Project[]> {
       return [];
     }
 
-    return data.map(mapProject);
+    return data.map(mapListProject);
   } catch {
     return [];
   }
@@ -114,7 +126,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
   try {
     const { data, error } = await supabase
       .from("projects")
-      .select(PROJECT_COLUMNS)
+      .select(PROJECT_DETAIL_COLUMNS)
       .eq("slug", slug)
       .maybeSingle();
 

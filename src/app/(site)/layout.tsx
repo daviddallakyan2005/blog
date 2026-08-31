@@ -1,7 +1,7 @@
 import { EasterEggProvider } from "@/components/play/easter-egg-provider";
 import { Footer } from "@/components/site/footer";
 import { Header } from "@/components/site/header";
-import { getSiteSettings } from "@/lib/data/settings";
+import { getSiteChrome } from "@/lib/data/settings";
 import { SITE_NAME } from "@/lib/seo/site";
 
 export default async function SiteLayout({
@@ -9,8 +9,8 @@ export default async function SiteLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const settings = await getSiteSettings();
-  const siteName = settings?.display_name?.trim() || SITE_NAME;
+  const chrome = await getSiteChrome();
+  const siteName = chrome?.display_name?.trim() || SITE_NAME;
 
   return (
     <div className="flex min-h-dvh flex-col">

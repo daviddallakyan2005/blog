@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { type ReactNode, Suspense } from "react";
 
 import { RenderedHtml } from "@/components/prose/rendered-html";
 import { PostCard } from "@/components/site/post-card";
+import { PostListSkeleton } from "@/components/site/post-list";
 import { Button } from "@/components/ui/button";
 import { getPublishedArticles, getPublishedNotes } from "@/lib/data/posts";
 import { getSiteSettings } from "@/lib/data/settings";
+import type { PublishedPostListItem } from "@/lib/data/types";
 import { SITE_NAME } from "@/lib/seo/site";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -31,11 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [settings, articles, notes] = await Promise.all([
-    getSiteSettings(),
-    getPublishedArticles(5),
-    getPublishedNotes(5),
-  ]);
+  const settings = await getSiteSettings();
 
   const name = settings?.display_name?.trim() || SITE_NAME;
   const tagline = settings?.tagline?.trim();
@@ -79,18 +78,16 @@ export default async function HomePage() {
         )}
       </section>
 
-      <HomeSection
-        title="Articles"
-        href="/articles"
-        empty="No articles yet."
-        posts={articles}
-      />
-      <HomeSection
-        title="Notes"
-        href="/notes"
-        empty="No notes yet."
-        posts={notes}
-      />
+      <HomeSection title="Articles" href="/articles">
+        <Suspense fallback={<PostListSkeleton />}>
+          <HomeArticles />
+        </Suspense>
+      </HomeSection>
+      <HomeSection title="Notes" href="/notes">
+        <Suspense fallback={<PostListSkeleton />}>
+          <HomeNotes />
+        </Suspense>
+      </HomeSection>
     </div>
   );
 }
@@ -98,13 +95,11 @@ export default async function HomePage() {
 function HomeSection({
   title,
   href,
-  empty,
-  posts,
+  children,
 }: {
   title: string;
   href: string;
-  empty: string;
-  posts: Awaited<ReturnType<typeof getPublishedArticles>>;
+  children: ReactNode;
 }) {
   return (
     <section className="mt-16">
@@ -117,15 +112,37 @@ function HomeSection({
           View all
         </Link>
       </div>
-      {posts.length === 0 ? (
-        <p className="mt-6 text-muted-foreground">{empty}</p>
-      ) : (
-        <div className="mt-6">
-          {posts.map((post) => (
-            <PostCard key={post.id} post={post} />
-          ))}
-        </div>
-      )}
+      {children}
     </section>
+  );
+}
+
+async function HomeArticles() {
+  const posts = await getPublishedArticles(5);
+  return <HomeSectionPosts posts={posts} empty="No articles yet." />;
+}
+
+async function HomeNotes() {
+  const posts = await getPublishedNotes(5);
+  return <HomeSectionPosts posts={posts} empty="No notes yet." />;
+}
+
+function HomeSectionPosts({
+  posts,
+  empty,
+}: {
+  posts: PublishedPostListItem[];
+  empty: string;
+}) {
+  if (posts.length === 0) {
+    return <p className="mt-6 text-muted-foreground">{empty}</p>;
+  }
+
+  return (
+    <div className="mt-6">
+      {posts.map((post) => (
+        <PostCard key={post.id} post={post} />
+      ))}
+    </div>
   );
 }

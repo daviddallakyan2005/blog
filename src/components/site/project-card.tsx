@@ -8,9 +8,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { Project } from "@/lib/data/types";
+import type { ProjectListItem } from "@/lib/data/types";
 
-export function ProjectCard({ project }: { project: Project }) {
+export function ProjectCard({ project }: { project: ProjectListItem }) {
   return (
     <Card>
       <CardHeader>

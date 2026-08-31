@@ -26,6 +26,35 @@ export function parseSocial(value: Json | null | undefined): SiteSocial {
   };
 }
 
+export async function getSiteChrome(): Promise<{
+  display_name: string | null;
+} | null> {
+  "use cache";
+  cacheTag("settings");
+  cacheLife("hours");
+
+  const supabase = createClient();
+  if (!supabase) {
+    return null;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("site_settings")
+      .select("display_name")
+      .eq("id", 1)
+      .maybeSingle();
+
+    if (error || !data) {
+      return null;
+    }
+
+    return { display_name: data.display_name };
+  } catch {
+    return null;
+  }
+}
+
 export async function getSiteSettings(): Promise<SiteSettings | null> {
   "use cache";
   cacheTag("settings");

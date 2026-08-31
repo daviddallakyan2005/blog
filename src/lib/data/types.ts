@@ -67,6 +67,8 @@ export type Project = {
   forks: number | null;
 };
 
+export type ProjectListItem = Omit<Project, "description_html">;
+
 export type TimelineKind =
   | "role"
   | "education"

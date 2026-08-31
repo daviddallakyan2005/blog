@@ -2,7 +2,7 @@ import { cacheLife, cacheTag } from "next/cache";
 
 import { createClient } from "@/lib/supabase/anon";
 
-import { compactPosts, POST_LIST_COLUMNS, type PostListRow } from "./map";
+import { compactPosts, type PostListRow } from "./map";
 import type { PublishedPostListItem, Tag } from "./types";
 
 export async function getAllTags(): Promise<Tag[]> {
@@ -58,6 +58,16 @@ export async function getTagBySlug(slug: string): Promise<Tag | null> {
   }
 }
 
+const TAG_FILTERED_POST_COLUMNS = `
+  id, slug, kind, title, summary, cover_path, published_at, reading_minutes,
+  post_tags (
+    tags (id, name, slug)
+  ),
+  filter_tags:post_tags!inner (
+    tags!inner (slug)
+  )
+` as const;
+
 export async function getPublishedPostsByTag(
   tagSlug: string,
 ): Promise<PublishedPostListItem[]> {
@@ -71,40 +81,18 @@ export async function getPublishedPostsByTag(
   }
 
   try {
-    const { data: tag, error: tagError } = await supabase
-      .from("tags")
-      .select("id")
-      .eq("slug", tagSlug)
-      .maybeSingle();
-
-    if (tagError || !tag) {
-      return [];
-    }
-
-    const { data: links, error: linkError } = await supabase
-      .from("post_tags")
-      .select("post_id")
-      .eq("tag_id", tag.id);
-
-    if (linkError || !links?.length) {
-      return [];
-    }
-
-    const { data: posts, error: postError } = await supabase
+    const { data, error } = await supabase
       .from("posts")
-      .select(POST_LIST_COLUMNS)
+      .select(TAG_FILTERED_POST_COLUMNS)
       .eq("status", "published")
-      .in(
-        "id",
-        links.map((link) => link.post_id),
-      )
+      .eq("filter_tags.tags.slug", tagSlug)
       .order("published_at", { ascending: false });
 
-    if (postError) {
+    if (error) {
       return [];
     }
 
-    return compactPosts(posts as PostListRow[] | null);
+    return compactPosts(data as PostListRow[] | null);
   } catch {
     return [];
   }

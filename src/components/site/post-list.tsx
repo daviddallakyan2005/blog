@@ -1,4 +1,5 @@
 import { PostCard } from "@/components/site/post-card";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { PublishedPostListItem } from "@/lib/data/types";
 
 export function PostList({
@@ -26,9 +27,9 @@ export function PostListSkeleton() {
     <div className="mt-10 space-y-8" aria-hidden="true">
       {Array.from({ length: 3 }, (_, index) => (
         <div key={index} className="space-y-3">
-          <div className="h-6 w-2/3 rounded-md bg-muted" />
-          <div className="h-4 w-full rounded-md bg-muted" />
-          <div className="h-4 w-1/3 rounded-md bg-muted" />
+          <Skeleton className="h-6 w-2/3" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-1/3" />
         </div>
       ))}
     </div>
