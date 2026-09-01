@@ -8,6 +8,7 @@ import { PostCard } from "@/components/site/post-card";
 import { CompactPostListSkeleton } from "@/components/site/post-list";
 import { SocialLinks } from "@/components/site/social-links";
 import { TimelineList } from "@/components/site/timeline-list";
+import { splitCvSummary } from "@/lib/cv/split-summary";
 import { getPublishedArticles } from "@/lib/data/posts";
 import { getSiteSettings } from "@/lib/data/settings";
 import { getTimelineEntries } from "@/lib/data/timeline";
@@ -41,7 +42,7 @@ export default async function HomePage() {
   const tagline = settings?.tagline?.trim();
   const bioHtml = settings?.bio_html?.trim();
   const cvHtml = settings?.cv_html?.trim() ?? "";
-  const showCv = entries.length > 0 || Boolean(cvHtml);
+  const { summaryHtml, restHtml } = splitCvSummary(cvHtml);
 
   return (
     <div className="mx-auto max-w-prose px-6 py-16">
@@ -56,6 +57,12 @@ export default async function HomePage() {
           <div
             className="prose-blog mt-6"
             dangerouslySetInnerHTML={{ __html: bioHtml }}
+          />
+        ) : null}
+        {summaryHtml ? (
+          <div
+            className="prose-blog mt-6"
+            dangerouslySetInnerHTML={{ __html: summaryHtml }}
           />
         ) : null}
         {settings ? (
@@ -78,14 +85,17 @@ export default async function HomePage() {
         ) : null}
       </section>
 
-      {showCv ? (
-        <CvDisclosure>
+      {entries.length > 0 ? (
+        <div className="mt-12">
           <TimelineList compact entries={entries} />
-          {cvHtml ? (
-            <div className={entries.length > 0 ? "cv-doc mt-10" : "cv-doc"}>
-              <RenderedHtml html={cvHtml} />
-            </div>
-          ) : null}
+        </div>
+      ) : null}
+
+      {restHtml ? (
+        <CvDisclosure>
+          <div className="cv-doc">
+            <RenderedHtml html={restHtml} />
+          </div>
         </CvDisclosure>
       ) : null}
 
