@@ -16,7 +16,7 @@ Always-on: `project`, `guidelines`, `subagents`. Path-scoped: `testing`, `ui`, `
 
 **User-invoked** (`disable-model-invocation: true`): `handoff`
 
-**Model-invoked:** `grill`, `tdd`, `diagnose`, `delivery-team`, `migrate`, `deploy`, `write-post`, `design`, `performance`, `seo` (includes Search Console after publish / public URL changes)
+**Model-invoked:** `grill`, `tdd`, `diagnose`, `delivery-team`, `migrate`, `deploy`, `write-post`, `design`, `performance`, `seo`. `delivery-team` runs `seo` after wave 1 when a public URL may have changed. `write-post` / `deploy` run Search Console after production is serving the new URLs.
 
 After typecheck/test/build: ask whether to commit and push to `main`. If yes, `deploy` watches Vercel logs, confirms Supabase migrations, smokes the live site, then stops local Next/Supabase. When the work is fully finished, stop local servers either way.
 

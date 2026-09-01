@@ -1,6 +1,6 @@
 ---
 name: seo
-description: Audits metadata, Open Graph, sitemap, RSS, JSON-LD, and Google Search Console for the public blog. Use when adding or removing public routes, changing site URL, publishing, or reviewing discoverability.
+description: Audits metadata, Open Graph, sitemap, RSS, JSON-LD, and Google Search Console for the public blog. After implementing a change, check whether a public URL was added, removed, or redirected; if so, update the SEO contract in the same change. Delivery-team runs this after wave 1 before the gate. Also use when changing the site URL, publishing, or reviewing discoverability.
 ---
 
 # SEO
@@ -8,6 +8,10 @@ description: Audits metadata, Open Graph, sitemap, RSS, JSON-LD, and Google Sear
 Read `.cursor/rules/seo.mdc` and score the public surface against it.
 
 Helpers: `src/lib/seo/site.ts`, `src/components/seo/json-ld.tsx`, `src/components/seo/og-image.tsx`.
+
+## After a change
+
+Score the diff against `seo.mdc` before review. If a public URL was added, removed, or redirected and sitemap / robots / JSON-LD / RSS / `llms.txt` were not updated in the same change, that is a gap — fix it before the gate. Search Console is post-production only (`deploy`, or `write-post` after a studio publish).
 
 ## When the contract changes
 

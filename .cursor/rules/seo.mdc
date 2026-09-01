@@ -17,4 +17,4 @@ alwaysApply: false
 - After new public routes, update sitemap, robots (if needed), and JSON-LD in the same change.
 - After production serves a public URL add, remove, or redirect, follow the `seo` skill Search Console steps. Do not keep a second sitemap in GSC.
 
-Audit workflow: `seo` skill.
+Audit workflow: `seo` skill. `delivery-team` runs it after wave 1 whenever a public URL may have changed. `write-post` runs Search Console after a studio publish.

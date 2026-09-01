@@ -1,6 +1,6 @@
 ---
 name: delivery-team
-description: Wave/fan-out orchestration for this blog. Brief disjoint-path subagents on grok, gate with typecheck/test/build, fan-out reviewers. After green, ask whether to commit and push to main. When finished, stop local Next/Supabase. A FAIL goes back to the owning implementer — never a silent orchestrator patch. Use for features, fixes, migrations, and meaningful UI before claiming done.
+description: Wave/fan-out orchestration for this blog. Brief disjoint-path subagents on grok, after wave 1 check whether a public URL changed and run seo if so, then gate with typecheck/test/build, fan-out reviewers. After green, ask whether to commit and push to main. When finished, stop local Next/Supabase. A FAIL goes back to the owning implementer — never a silent orchestrator patch. Use for features, fixes, migrations, and meaningful UI before claiming done.
 ---
 
 # Delivery team
@@ -16,9 +16,18 @@ The main agent is an **orchestrator**. It plans, delegates, gates, and routes re
 ## Wave 1 — implement
 
 1. Split the request into **disjoint paths** (no two subagents edit the same files).
-2. Brief each implementation subagent with goal, acceptance criteria, allowed paths, and files they must not touch. Testable seams → `tdd`. Do not TDD-first studio UI, RLS, or migrations.
+2. Brief each implementation subagent with goal, acceptance criteria, allowed paths, and files they must not touch. Testable seams → `tdd`. Do not TDD-first studio UI, RLS, or migrations. If the work adds, removes, or redirects a public URL (`seo.mdc` static paths, or a new `src/app/(site)/` collection), that implementer's allowed paths include sitemap, robots, JSON-LD, RSS if needed, and `/llms.txt` — same change, not a follow-up.
 3. Launch them in parallel on `cursor-grok-4.6-high`.
 4. Integrate: resolve conflicts yourself only at the seam. If a path is wrong, send it back to that owner.
+
+## After wave 1 — SEO
+
+Before the gate, inspect the diff. Did this add, remove, or redirect a **public URL** (static paths in `seo.mdc`, plus published article/project pages)? Studio, auth, `/tags`, `/search`, `/about`, and `/cv` do not count.
+
+- **Yes** → follow `seo` (same-change contract). Gaps are material: send back to the owner before the gate. Search Console waits until `deploy` (or `write-post` after a studio publish).
+- **No** → record `SEO: no public URL change` and continue.
+
+Do not skip this question.
 
 ## Gate
 
