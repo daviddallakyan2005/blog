@@ -118,6 +118,84 @@ function splitTopLevel(html: string): Block[] {
   return blocks;
 }
 
+export type CvExperienceBasic = {
+  org: string;
+  metaHtml: string;
+};
+
+function innerHtml(html: string, block: Block): string {
+  const openEnd = html.indexOf(">", block.start);
+  if (openEnd === -1 || openEnd >= block.end) {
+    return "";
+  }
+  const closeStart = html.lastIndexOf("</", block.end);
+  if (closeStart <= openEnd) {
+    return "";
+  }
+  return html.slice(openEnd + 1, closeStart);
+}
+
+function headingLabel(html: string, block: Block): string {
+  return visibleText(html.slice(block.start, block.end)).toLowerCase();
+}
+
+function sectionAfterHeading(
+  blocks: Block[],
+  headingIndex: number,
+): Block[] {
+  let sectionEnd = headingIndex + 1;
+  while (
+    sectionEnd < blocks.length &&
+    blocks[sectionEnd].tag !== "h1" &&
+    blocks[sectionEnd].tag !== "h2"
+  ) {
+    sectionEnd += 1;
+  }
+  return blocks.slice(headingIndex + 1, sectionEnd);
+}
+
+export function extractCvExperienceBasics(
+  html: string,
+): CvExperienceBasic[] {
+  if (html.trim() === "") {
+    return [];
+  }
+
+  const blocks = splitTopLevel(html);
+  const experienceIndex = blocks.findIndex(
+    (block) => block.tag === "h2" && headingLabel(html, block) === "experience",
+  );
+
+  if (experienceIndex === -1) {
+    return [];
+  }
+
+  const section = sectionAfterHeading(blocks, experienceIndex);
+  const jobs: CvExperienceBasic[] = [];
+
+  for (let i = 0; i < section.length; i++) {
+    const block = section[i];
+    if (block.tag !== "h3") {
+      continue;
+    }
+
+    const org = visibleText(html.slice(block.start, block.end));
+    let metaHtml = "";
+    for (let j = i + 1; j < section.length; j++) {
+      if (section[j].tag === "h3") {
+        break;
+      }
+      if (section[j].tag === "p") {
+        metaHtml = innerHtml(html, section[j]);
+        break;
+      }
+    }
+    jobs.push({ org, metaHtml });
+  }
+
+  return jobs;
+}
+
 export function splitCvSummary(html: string): {
   summaryHtml: string;
   restHtml: string;

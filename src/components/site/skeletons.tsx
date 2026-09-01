@@ -94,13 +94,24 @@ export function HomeSkeleton() {
           <Skeleton className="h-4 w-16" />
           <Skeleton className="h-4 w-24" />
         </div>
-        <div className="mt-12 space-y-4">
-          {Array.from({ length: 3 }, (_, index) => (
-            <div key={index} className="space-y-2">
-              <Skeleton className="h-5 w-2/3" />
-              <Skeleton className="h-4 w-40" />
-            </div>
-          ))}
+        <div className="mt-12 space-y-8">
+          <div className="space-y-4">
+            <Skeleton className="h-3 w-20" />
+            {Array.from({ length: 2 }, (_, index) => (
+              <div key={`experience-${index}`} className="space-y-2">
+                <Skeleton className="h-5 w-2/3" />
+                <Skeleton className="h-4 w-56" />
+              </div>
+            ))}
+          </div>
+          <div className="space-y-4">
+            {Array.from({ length: 3 }, (_, index) => (
+              <div key={`timeline-${index}`} className="space-y-2">
+                <Skeleton className="h-5 w-2/3" />
+                <Skeleton className="h-4 w-40" />
+              </div>
+            ))}
+          </div>
         </div>
         <Skeleton className="mt-8 h-5 w-10" />
         <div className="mt-16">

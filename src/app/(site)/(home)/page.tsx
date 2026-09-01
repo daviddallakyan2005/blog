@@ -4,11 +4,15 @@ import { type ReactNode, Suspense } from "react";
 
 import { RenderedHtml } from "@/components/prose/rendered-html";
 import { CvDisclosure } from "@/components/site/cv-disclosure";
+import { CvExperienceList } from "@/components/site/cv-experience-list";
 import { PostCard } from "@/components/site/post-card";
 import { CompactPostListSkeleton } from "@/components/site/post-list";
 import { SocialLinks } from "@/components/site/social-links";
 import { TimelineList } from "@/components/site/timeline-list";
-import { splitCvSummary } from "@/lib/cv/split-summary";
+import {
+  extractCvExperienceBasics,
+  splitCvSummary,
+} from "@/lib/cv/split-summary";
 import { getPublishedArticles } from "@/lib/data/posts";
 import { getSiteSettings } from "@/lib/data/settings";
 import { getTimelineEntries } from "@/lib/data/timeline";
@@ -43,6 +47,7 @@ export default async function HomePage() {
   const bioHtml = settings?.bio_html?.trim();
   const cvHtml = settings?.cv_html?.trim() ?? "";
   const { summaryHtml, restHtml } = splitCvSummary(cvHtml);
+  const experienceJobs = extractCvExperienceBasics(cvHtml);
 
   return (
     <div className="mx-auto max-w-prose px-6 py-16">
@@ -85,9 +90,14 @@ export default async function HomePage() {
         ) : null}
       </section>
 
-      {entries.length > 0 ? (
-        <div className="mt-12">
-          <TimelineList compact entries={entries} />
+      {experienceJobs.length > 0 || entries.length > 0 ? (
+        <div className="mt-12 space-y-8">
+          {experienceJobs.length > 0 ? (
+            <CvExperienceList jobs={experienceJobs} />
+          ) : null}
+          {entries.length > 0 ? (
+            <TimelineList compact entries={entries} />
+          ) : null}
         </div>
       ) : null}
 
